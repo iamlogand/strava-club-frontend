@@ -53,7 +53,7 @@ const HomePage = () => {
 
   if (records.length === 0)
     return (
-      <main className="flex flex-col h-screen w-screen justify-center items-center bg-slate-800">
+      <main className="flex flex-col h-screen w-screen justify-center items-center bg-slate-700">
         <p className="text-white">Loading</p>
         <div className="text-white">
           <CircularProgress color="inherit" />
