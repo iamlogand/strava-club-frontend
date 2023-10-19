@@ -25,7 +25,7 @@ class Record {
   constructor(data: RecordData) {
     this.name = `${data.athlete.firstname} ${data.athlete.lastname}`
     this.description = data.name
-    this.distance = Math.round(data.distance) / 1000
+    this.distance = data.distance
     this.elapsedTime = data.elapsed_time
     this.totalElevationGain = data.total_elevation_gain
     this.type = data.sport_type
