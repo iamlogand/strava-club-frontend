@@ -9,13 +9,13 @@ import {
   CircularProgress,
   FormControl,
   InputLabel,
-  Link,
   MenuItem,
   Select,
   SelectChangeEvent,
+  Tab,
+  Tabs,
 } from "@mui/material"
 import Aggregate from "@/classes/aggregate"
-import { act } from "react-dom/test-utils"
 
 type ActivityType = "Run" | "Walk" | "Ride"
 
@@ -23,7 +23,7 @@ const HomePage = () => {
   const [records, setRecords] = useState<Record[]>([])
   const [aggregates, setAggregates] = useState<Aggregate[]>([])
   const [filter, setFilter] = useState<ActivityType>("Run")
-  const [page, setPage] = useState(0)
+  const [tab, setTab] = useState(0)
 
   const getRecords = useCallback(async () => {
     const downloadedRecords = await downloadRecords()
@@ -132,26 +132,12 @@ const HomePage = () => {
     { field: "totalElevationGain", headerName: "Elevation / m", width: 180 },
   ]
 
-  const getLink = (
-    pageId: number,
-    pageTitle: string,
-    selectedPageId: number
-  ) => (
-    <Link
-      key={pageId}
-      onClick={() => setPage(pageId)}
-      className={` decoration-inherit cursor-pointer ${
-        selectedPageId === pageId
-          ? "text-white font-semibold"
-          : "text-inherit no-underline"
-      }`}
-    >
-      {pageTitle}
-    </Link>
-  )
-
-  const handleChange = (event: SelectChangeEvent) => {
+  const handleFilterChange = (event: SelectChangeEvent) => {
     setFilter(event.target.value as ActivityType)
+  }
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTab(newValue)
   }
 
   if (records.length === 0)
@@ -165,25 +151,33 @@ const HomePage = () => {
     )
 
   return (
-    <main className="flex flex-col items-center p-5 gap-5 h-screen box-border bg-slate-700">
-      <h1 className="text-2xl font-bold text-center m-0 leading-none text-white">
+    <main className="flex flex-col items-center p-5 h-screen box-border bg-slate-700">
+      <h1 className="text-2xl font-bold text-center m-0 mb-4 leading-none text-white">
         AutoRek Strava Club
       </h1>
-      <nav className="text-slate-300 mb-1">
-        <div className="flex gap-6">
-          {getLink(0, "Activities", page)}
-          {getLink(1, "Leader Boards", page)}
-        </div>
-      </nav>
-      {page == 0 && (
-        <div className="flex-1 w-full max-w-[1200px] box-border bg-white shadow rounded">
-          <div className="h-full box-border p-4">
-            <DataGrid rows={recordRows} columns={recordColumns} autoPageSize />
+      <div className="flex-1 w-full max-w-[1200px] flex flex-col box-border bg-white shadow rounded">
+        <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t">
+          <div className="flex gap-6">
+            <Tabs
+              value={tab}
+              onChange={handleTabChange}
+              aria-label="basic tabs example"
+            >
+              <Tab label="Activities" />
+              <Tab label="Leader Boards" />
+            </Tabs>
           </div>
-        </div>
-      )}
-      {page == 1 && (
-        <div className="flex-1 w-full max-w-[1200px] box-border bg-white shadow rounded">
+        </nav>
+        {tab == 0 && (
+            <div className="h-full box-border p-4">
+              <DataGrid
+                rows={recordRows}
+                columns={recordColumns}
+                autoPageSize
+              />
+            </div>
+        )}
+        {tab == 1 && (
           <div className="h-full flex flex-col p-4 mt-1 gap-4 box-border">
             <div className="flex justify-center">
               <div className="max-w-[200px] flex-1">
@@ -193,7 +187,7 @@ const HomePage = () => {
                     labelId="select-label"
                     value={filter}
                     label="Activity Type"
-                    onChange={handleChange}
+                    onChange={handleFilterChange}
                   >
                     <MenuItem value={"Run"}>Run</MenuItem>
                     <MenuItem value={"Walk"}>Walk</MenuItem>
@@ -215,8 +209,8 @@ const HomePage = () => {
               />
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </main>
   )
 }
