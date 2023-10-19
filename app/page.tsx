@@ -14,14 +14,14 @@ const HomePage = () => {
 
   useEffect( () => {
     getRecords()
-  }, [])
+  }, [getRecords])
 
   if (records.length === 0) return <p>Loading...</p>
 
   return (
     <main>
       <h1 className="text-xl font-bold">AutoRek Strava Club</h1>
-      {records.map((record) => <p>{record.name}</p>)}
+      {records.map((record, index) => <p key={index}>{record.name}</p>)}
     </main>
   )
 }
