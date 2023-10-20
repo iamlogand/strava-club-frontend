@@ -17,6 +17,10 @@ import {
 } from "@mui/material"
 import Aggregate from "@/classes/aggregate"
 import { useQueryState } from "next-usequerystate"
+import { DatePicker } from "@mui/x-date-pickers"
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import dayjs from 'dayjs';
 
 type ActivityType = "Run" | "Walk" | "Ride"
 
@@ -25,6 +29,9 @@ const HomePage = () => {
   const [aggregates, setAggregates] = useState<Aggregate[]>([])
   const [filter, setFilter] = useQueryState("filter")
   const [tab, setTab] = useQueryState("tab")
+  const [startDate, setStartDate] = useQueryState("startDate")
+  const [endDate, setEndDate] = useQueryState("endDate")
+  const [error, setError] = useState<string | null>(null)
 
   const getRecords = useCallback(async () => {
     const downloadedRecords = await downloadRecords()
@@ -52,13 +59,18 @@ const HomePage = () => {
     ) => {
       let totalDistance: number = 0
       records.forEach((record) => {
-        if (record.name == name && record.type == filter) {
+        if (
+          record.name == name &&
+          record.type == filter &&
+          (!startDate || record.date >= new Date(startDate as string)) &&
+          (!endDate || record.date <= new Date(endDate as string))
+        ) {
           totalDistance += record[field]
         }
       })
       return totalDistance
     },
-    [records, filter]
+    [records, filter, startDate]
   )
 
   const getAggregates = useCallback(() => {
@@ -87,9 +99,27 @@ const HomePage = () => {
     setAggregates(getAggregates())
   }, [records, getAggregates])
 
+  const setTabToDefault = useCallback(async () => {
+    // Delay rerender to ensure MUI tabs are rendered correctly
+    setTimeout(() => {
+      setTab("activities")
+    }, 100)
+  }, [setTab])
+
   useEffect(() => {
-    if (tab === null) setTab("0")
+    // Default to activities tab
+    if (!tab || (tab !== "activities" && tab !== "leaderBoards"))
+      setTabToDefault()
   }, [tab, setTab])
+
+  useEffect(() => {
+    // check start date is not after end date
+    if (startDate && endDate && startDate > endDate) {
+      setError("Start date cannot be after end date")
+    } else {
+      setError(null)
+    }
+  }, [startDate, endDate])
 
   const recordRows = records.map((record, index) => {
     return {
@@ -145,11 +175,11 @@ const HomePage = () => {
     setFilter(event.target.value as ActivityType)
   }
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     setTab(newValue.toString())
   }
 
-  if (records.length === 0 || tab === null)
+  if (records.length === 0)
     return (
       <main className="flex flex-col h-screen w-screen justify-center items-center bg-slate-700">
         <p className="text-white">Loading</p>
@@ -168,16 +198,16 @@ const HomePage = () => {
         <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t shadow border-0 border-b border-solid border-slate-300">
           <div className="flex gap-6 flex justify-center">
             <Tabs
-              value={parseInt(tab)}
+              value={tab}
               onChange={handleTabChange}
               aria-label="basic tabs example"
             >
-              <Tab label="Activities" />
-              <Tab label="Leader Boards" />
+              <Tab label="Activities" value="activities" />
+              <Tab label="Leader Boards" value="leaderBoards" />
             </Tabs>
           </div>
         </nav>
-        {tab === "0" && (
+        {(tab === "activities" || tab === null) && (
           <div className="h-full box-border p-4">
             <DataGrid
               rows={recordRows}
@@ -191,10 +221,10 @@ const HomePage = () => {
             />
           </div>
         )}
-        {tab === "1" && (
-          <div className="h-full flex flex-col p-4 mt-2 gap-6 box-border">
-            <div className="flex justify-center">
-              <div className="max-w-[200px] flex-1">
+        {tab === "leaderBoards" && (
+          <div className="h-full flex flex-col p-4 mt-2 gap-2 box-border">
+            <div className="flex justify-center gap-4 flex-col items-center lg:flex-row">
+              <div className="w-full max-w-[259px] flex-1">
                 <FormControl fullWidth>
                   <InputLabel id="select-label">Activity Type</InputLabel>
                   <Select
@@ -209,8 +239,43 @@ const HomePage = () => {
                   </Select>
                 </FormControl>
               </div>
+              <div className="max-w-[259px]">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Start date"
+                    value={dayjs(startDate)}
+                    onChange={(newValue) => setStartDate(newValue?.toString() ?? null)}
+                    slotProps={{
+                      field: {
+                        clearable: true,
+                        onClear: () => setStartDate(null),
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
+              <div className="max-w-[259px]">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="End date"
+                    value={dayjs(endDate)}
+                    onChange={(newValue) => setEndDate(newValue?.toString() ?? null)}
+                    slotProps={{
+                      field: {
+                        clearable: true,
+                        onClear: () => setEndDate(null),
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
             </div>
-            <div className="flex-1 box-border">
+            {error && (
+              <div className="self-center">
+                <p className="text-red-500 m-0">{error}</p>
+              </div>
+            )}
+            <div className="flex-1 box-border mt-3">
               <DataGrid
                 rows={aggregateRows}
                 columns={aggregateColumns}
