@@ -156,7 +156,7 @@ const HomePage = () => {
         AutoRek Strava Club
       </h1>
       <div className="flex-1 w-full max-w-[1200px] flex flex-col box-border bg-white shadow rounded">
-        <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t">
+        <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t shadow border-0 border-b border-solid border-slate-300">
           <div className="flex gap-6 flex justify-center">
             <Tabs
               value={tab}
@@ -173,12 +173,17 @@ const HomePage = () => {
               <DataGrid
                 rows={recordRows}
                 columns={recordColumns}
+                initialState={{
+                  sorting: {
+                    sortModel: [{ field: "date", sort: "desc" }],
+                  },
+                }}
                 autoPageSize
               />
             </div>
         )}
         {tab == 1 && (
-          <div className="h-full flex flex-col p-3 mt-3 gap-6 box-border">
+          <div className="h-full flex flex-col p-4 mt-2 gap-6 box-border">
             <div className="flex justify-center">
               <div className="max-w-[200px] flex-1">
                 <FormControl fullWidth>
