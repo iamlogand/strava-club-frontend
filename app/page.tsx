@@ -59,18 +59,19 @@ const HomePage = () => {
     ) => {
       let totalDistance: number = 0
       records.forEach((record) => {
+        console.log(endDate as string)
         if (
           record.name == name &&
           record.type == filter &&
           (!startDate || record.date >= new Date(startDate as string)) &&
-          (!endDate || record.date <= new Date(endDate as string))
+          (!endDate || record.date <= new Date(new Date(endDate as string).getTime() + 24 * 60 * 60 * 1000))
         ) {
           totalDistance += record[field]
         }
       })
       return totalDistance
     },
-    [records, filter, startDate]
+    [records, filter, startDate, endDate]
   )
 
   const getAggregates = useCallback(() => {
@@ -110,11 +111,11 @@ const HomePage = () => {
     // Default to activities tab
     if (!tab || (tab !== "activities" && tab !== "leaderBoards"))
       setTabToDefault()
-  }, [tab, setTab])
+  }, [tab, setTab, setTabToDefault])
 
   useEffect(() => {
     // check start date is not after end date
-    if (startDate && endDate && startDate > endDate) {
+    if (startDate && endDate && dayjs(startDate) > dayjs(endDate)) {
       setError("Start date cannot be after end date")
     } else {
       setError(null)
@@ -243,7 +244,7 @@ const HomePage = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Start date"
-                    value={dayjs(startDate)}
+                    value={startDate ? dayjs(startDate) : null}
                     onChange={(newValue) => setStartDate(newValue?.toString() ?? null)}
                     slotProps={{
                       field: {
@@ -258,7 +259,7 @@ const HomePage = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="End date"
-                    value={dayjs(endDate)}
+                    value={endDate ? dayjs(endDate) : null}
                     onChange={(newValue) => setEndDate(newValue?.toString() ?? null)}
                     slotProps={{
                       field: {
