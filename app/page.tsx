@@ -16,14 +16,15 @@ import {
   Tabs,
 } from "@mui/material"
 import Aggregate from "@/classes/aggregate"
+import { useQueryState } from "next-usequerystate"
 
 type ActivityType = "Run" | "Walk" | "Ride"
 
 const HomePage = () => {
   const [records, setRecords] = useState<Record[]>([])
   const [aggregates, setAggregates] = useState<Aggregate[]>([])
-  const [filter, setFilter] = useState<ActivityType>("Run")
-  const [tab, setTab] = useState(0)
+  const [filter, setFilter] = useQueryState("filter")
+  const [tab, setTab] = useQueryState("tab")
 
   const getRecords = useCallback(async () => {
     const downloadedRecords = await downloadRecords()
@@ -86,6 +87,10 @@ const HomePage = () => {
     setAggregates(getAggregates())
   }, [records, getAggregates])
 
+  useEffect(() => {
+    if (tab === null) setTab("0")
+  }, [tab, setTab])
+
   const recordRows = records.map((record, index) => {
     return {
       id: index,
@@ -141,10 +146,10 @@ const HomePage = () => {
   }
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTab(newValue)
+    setTab(newValue.toString())
   }
 
-  if (records.length === 0)
+  if (records.length === 0 || tab === null)
     return (
       <main className="flex flex-col h-screen w-screen justify-center items-center bg-slate-700">
         <p className="text-white">Loading</p>
@@ -163,7 +168,7 @@ const HomePage = () => {
         <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t shadow border-0 border-b border-solid border-slate-300">
           <div className="flex gap-6 flex justify-center">
             <Tabs
-              value={tab}
+              value={parseInt(tab)}
               onChange={handleTabChange}
               aria-label="basic tabs example"
             >
@@ -172,7 +177,7 @@ const HomePage = () => {
             </Tabs>
           </div>
         </nav>
-        {tab == 0 && (
+        {tab === "0" && (
           <div className="h-full box-border p-4">
             <DataGrid
               rows={recordRows}
@@ -186,7 +191,7 @@ const HomePage = () => {
             />
           </div>
         )}
-        {tab == 1 && (
+        {tab === "1" && (
           <div className="h-full flex flex-col p-4 mt-2 gap-6 box-border">
             <div className="flex justify-center">
               <div className="max-w-[200px] flex-1">
@@ -194,7 +199,7 @@ const HomePage = () => {
                   <InputLabel id="select-label">Activity Type</InputLabel>
                   <Select
                     labelId="select-label"
-                    value={filter}
+                    value={filter as ActivityType}
                     label="Activity Type"
                     onChange={handleFilterChange}
                   >
