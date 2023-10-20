@@ -64,12 +64,16 @@ const HomePage = () => {
     const names = getUniqueNames()
     const aggregates: Aggregate[] = []
     names.forEach((name) => {
-      aggregates.push({
-        name: name,
-        distance: getTotal(name, "distance"),
-        elapsedTime: getTotal(name, "elapsedTime"),
-        totalElevationGain: getTotal(name, "totalElevationGain"),
-      })
+      const totalDistance = getTotal(name, "distance")
+      const totalElapsedTime = getTotal(name, "elapsedTime")
+      const totalElevationGain = getTotal(name, "totalElevationGain")
+      if (totalDistance > 0 || totalElapsedTime > 0)
+        aggregates.push({
+          name: name,
+          distance: totalDistance,
+          elapsedTime: totalElapsedTime,
+          totalElevationGain: totalElevationGain,
+        })
     })
     return aggregates
   }, [getTotal, getUniqueNames])
@@ -169,18 +173,18 @@ const HomePage = () => {
           </div>
         </nav>
         {tab == 0 && (
-            <div className="h-full box-border p-4">
-              <DataGrid
-                rows={recordRows}
-                columns={recordColumns}
-                initialState={{
-                  sorting: {
-                    sortModel: [{ field: "date", sort: "desc" }],
-                  },
-                }}
-                autoPageSize
-              />
-            </div>
+          <div className="h-full box-border p-4">
+            <DataGrid
+              rows={recordRows}
+              columns={recordColumns}
+              initialState={{
+                sorting: {
+                  sortModel: [{ field: "date", sort: "desc" }],
+                },
+              }}
+              autoPageSize
+            />
+          </div>
         )}
         {tab == 1 && (
           <div className="h-full flex flex-col p-4 mt-2 gap-6 box-border">
