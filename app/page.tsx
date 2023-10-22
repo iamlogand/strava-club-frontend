@@ -7,10 +7,16 @@ import { DataGrid } from "@mui/x-data-grid"
 import { formatDate } from "@/functions/formatDate"
 import {
   Button,
+  Checkbox,
   Chip,
   CircularProgress,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   IconButton,
   InputLabel,
   MenuItem,
@@ -42,6 +48,9 @@ const HomePage = () => {
   const [selectedAthletes, setSelectedAthletes] =
     useQueryState("selectedAthletes")
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+  const [dialogSelectedAthletes, setDialogSelectedAthletes] = useState<
+    string[]
+  >([])
 
   const getRecords = useCallback(async () => {
     const downloadedRecords = await downloadRecords()
@@ -100,7 +109,10 @@ const HomePage = () => {
     const selectedNames = selectedAthletes?.split(",") ?? []
     names
       .filter(
-        (name) => selectedAthletes === "" || selectedAthletes === null || selectedNames?.includes(name)
+        (name) =>
+          selectedAthletes === "" ||
+          selectedAthletes === null ||
+          selectedNames?.includes(name)
       )
       .forEach((name) => {
         const totalDistance = getTotal(name, "distance")
@@ -225,22 +237,47 @@ const HomePage = () => {
     })
   }
 
-  const handleSelectAthlete = (name: string) => {
-    setSelectedAthletes((currentValue) => {
-      const currentNames = currentValue ? currentValue.split(",") : []
-      return !currentNames.includes(name)
-        ? [...currentNames, name].join(",")
-        : currentValue
-    })
-    setDialogOpen(false)
-  }
-
   const handleSelectAllAthletes = () => {
     setSelectedAthletes(getUniqueNames().join(","))
   }
 
   const handleUnselectAllAthletes = () => {
     setSelectedAthletes("")
+  }
+
+  const handleSelectAthletes = () => {
+    setSelectedAthletes((currentValue) => {
+      let names = currentValue ? currentValue.split(",") : []
+      dialogSelectedAthletes.forEach((name) => {
+        if (!names.includes(name)) {
+          names.push(name)
+        }
+      })
+      return names.join(",")
+    })
+    setDialogOpen(false)
+    setDialogSelectedAthletes([])
+  }
+
+  const handleDialogSelectAthlete = (name: string) => {
+    setDialogSelectedAthletes((currentNames) =>
+      !currentNames.includes(name) ? [...currentNames, name] : currentNames
+    )
+  }
+
+  const handleDialogUnselectAthlete = (name: string) => {
+    setDialogSelectedAthletes((currentNames) =>
+      currentNames.filter((currentName) => currentName != name)
+    )
+  }
+
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    name: string
+  ) => {
+    event.target.checked
+      ? handleDialogSelectAthlete(name)
+      : handleDialogUnselectAthlete(name)
   }
 
   const renderSelectedAthleteChit = (name: string, index: number) => (
@@ -257,6 +294,19 @@ const HomePage = () => {
           },
         },
       }}
+    />
+  )
+
+  const renderSelectAthleteCheckbox = (name: string, index: number) => (
+    <FormControlLabel
+      key={index}
+      control={
+        <Checkbox
+          checked={dialogSelectedAthletes.includes(name)}
+          onChange={(event) => handleCheckboxChange(event, name)}
+        />
+      }
+      label={name}
     />
   )
 
@@ -423,11 +473,18 @@ const HomePage = () => {
               </div>
             )}
             <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-              {getUniqueNames(true).map((name, index) => (
-                <Button key={index} onClick={() => handleSelectAthlete(name)}>
-                  {name}
-                </Button>
-              ))}
+              <DialogTitle>Select athletes</DialogTitle>
+              <div className="mx-6 mb-2 text-slate-500">Selecting {dialogSelectedAthletes.length} new athletes</div>
+              <DialogContent className="min-w-[160px] mx-6 px-8 border-solid border border-slate-200 rounded shadow-inner">
+                <FormGroup>
+                  {getUniqueNames(true).map((name, index) =>
+                    renderSelectAthleteCheckbox(name, index)
+                  )}
+                </FormGroup>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleSelectAthletes}>Select</Button>
+              </DialogActions>
             </Dialog>
             <div className="flex-1 box-border mt-2">
               <DataGrid
