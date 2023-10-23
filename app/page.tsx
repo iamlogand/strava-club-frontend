@@ -287,6 +287,10 @@ const HomePage = () => {
       onDelete={() => handleUnselectAthlete(name)}
       className="bg-slate-500 text-white"
       sx={{
+        "& .MuiButtonBase-root": {
+          color: "white",
+          backgroundColor: "#64748b",
+        },
         "& .MuiChip-deleteIcon": {
           color: "#94a3b8",
           "&:hover": {
