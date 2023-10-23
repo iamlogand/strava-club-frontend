@@ -327,7 +327,7 @@ const HomePage = () => {
   return (
     <main className="flex flex-col items-center p-5 min-h-screen box-border bg-slate-700">
       <h1 className="text-2xl font-bold text-center m-0 mb-4 leading-none text-white">
-        AutoRek Strava Club
+        Strava Club
       </h1>
       <div className="flex-1 w-full max-w-[1200px] flex flex-col box-border bg-white shadow rounded">
         <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t shadow border-0 border-b border-solid border-slate-300">

@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'AutoRek Strava Club',
-  description: 'AutoRek Strava Club',
+  title: 'Strava Club',
+  description: 'Strava Club',
 }
 
 export default function RootLayout({
