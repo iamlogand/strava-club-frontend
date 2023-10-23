@@ -24,6 +24,7 @@ import {
   SelectChangeEvent,
   Tab,
   Tabs,
+  TextField,
 } from "@mui/material"
 import Aggregate from "@/classes/aggregate"
 import { useQueryState } from "next-usequerystate"
@@ -34,17 +35,26 @@ import dayjs from "dayjs"
 import PersonAddIcon from "@mui/icons-material/PersonAdd"
 import GroupAddIcon from "@mui/icons-material/GroupAdd"
 import GroupRemoveIcon from "@mui/icons-material/GroupRemove"
+import useLocalStorage from "@/functions/useLocalStorage"
 
-type ActivityType = "Run" | "Walk" | "Ride"
+type ActivityType = "" | "Run" | "Walk" | "Ride"
 
 const HomePage = () => {
+  const [password, setPassword] = useLocalStorage<string>(
+    "password",
+    ""
+  )
+  const [candidatePassword, setCandidatePassword] =
+    useState<string>("")
+  const [connectionError, setConnectionError] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(true)
   const [records, setRecords] = useState<Record[]>([])
   const [aggregates, setAggregates] = useState<Aggregate[]>([])
   const [filter, setFilter] = useQueryState("filter")
   const [tab, setTab] = useQueryState("tab")
   const [startDate, setStartDate] = useQueryState("startDate")
   const [endDate, setEndDate] = useQueryState("endDate")
-  const [error, setError] = useState<string | null>(null)
+  const [dateError, setDateError] = useState<string | null>(null)
   const [selectedAthletes, setSelectedAthletes] =
     useQueryState("selectedAthletes")
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
@@ -53,13 +63,30 @@ const HomePage = () => {
   >([])
 
   const getRecords = useCallback(async () => {
-    const downloadedRecords = await downloadRecords()
+    setLoading(true)
+    if (password === "") {
+      setLoading(false)
+      return
+    }
+
+    let downloadedRecords = null
+    try {
+      downloadedRecords = await downloadRecords(password)
+    } catch {
+      setConnectionError("Invalid password")
+    }
+
+    if (downloadedRecords === null) {
+      setLoading(false)
+      return
+    }
 
     const parsedRecords = downloadedRecords.map(
       (record: object) => new Record(record as RecordData)
     )
     setRecords(parsedRecords)
-  }, [])
+    setLoading(false)
+  }, [password, setRecords])
 
   const getUniqueNames = useCallback(
     (excludeSelectedAthletes: boolean = false) => {
@@ -153,9 +180,9 @@ const HomePage = () => {
   useEffect(() => {
     // Check start date is not after end date
     if (startDate && endDate && dayjs(startDate) > dayjs(endDate)) {
-      setError("Start date cannot be after end date")
+      setDateError("Start date cannot be after end date")
     } else {
-      setError(null)
+      setDateError(null)
     }
   }, [startDate, endDate])
 
@@ -280,17 +307,23 @@ const HomePage = () => {
       : handleDialogUnselectAthlete(name)
   }
 
+  const clearData = () => {
+    setPassword("")
+    setCandidatePassword("")
+    setRecords([])
+    setAggregates([])
+    setConnectionError("")
+  }
+
   const renderSelectedAthleteChit = (name: string, index: number) => (
     <Chip
       key={index}
       label={name}
       onDelete={() => handleUnselectAthlete(name)}
-      className="bg-slate-500 text-white"
       sx={{
-        "& .MuiButtonBase-root": {
-          color: "white",
-          backgroundColor: "#64748b",
-        },
+        
+        color: "white",
+        backgroundColor: "#64748b",
         "& .MuiChip-deleteIcon": {
           color: "#94a3b8",
           "&:hover": {
@@ -314,7 +347,7 @@ const HomePage = () => {
     />
   )
 
-  if (records.length === 0)
+  if (loading === true)
     return (
       <main className="flex flex-col h-screen w-screen justify-center items-center bg-slate-700">
         <p className="text-white">Loading</p>
@@ -324,9 +357,41 @@ const HomePage = () => {
       </main>
     )
 
+  if (records.length === 0)
+    return (
+      <main className="flex h-screen w-screen justify-center items-center p-4 box-border bg-slate-700">
+        <div className="flex-1 max-w-[500px] flex flex-col gap-4 p-8 bg-white shadow rounded">
+          <h1 className="m-0 text-xl">Strava Club</h1>
+          <p className="m-0 mb-2">
+            A valid password is required to access this app
+          </p>
+          <TextField
+            id="name"
+            label="Password"
+            type="password"
+            value={candidatePassword}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setCandidatePassword(event.target.value)
+            }}
+            fullWidth
+            error={connectionError !== ""}
+            helperText={connectionError}
+          />
+          <div className="flex justify-end">
+            <Button
+              size="small"
+              onClick={() => setPassword(candidatePassword)}
+            >
+              Connect
+            </Button>
+          </div>
+        </div>
+      </main>
+    )
+
   return (
-    <main className="flex flex-col items-center p-5 min-h-screen box-border bg-slate-700">
-      <h1 className="text-2xl font-bold text-center m-0 mb-4 leading-none text-white">
+    <main className="flex flex-col items-center p-5 gap-2 min-h-screen box-border bg-slate-700">
+      <h1 className="text-2xl font-bold text-center m-0 mb-2 leading-none text-white">
         Strava Club
       </h1>
       <div className="flex-1 w-full max-w-[1200px] flex flex-col box-border bg-white shadow rounded">
@@ -352,9 +417,10 @@ const HomePage = () => {
                   sortModel: [{ field: "date", sort: "desc" }],
                 },
                 pagination: {
-                  paginationModel: { pageSize: 20 },
+                  paginationModel: { pageSize: 25 },
                 },
               }}
+              pageSizeOptions={[10, 25, 50, 100]}
               sx={{
                 "& .MuiDataGrid-virtualScroller": {
                   minHeight: "50px",
@@ -371,7 +437,7 @@ const HomePage = () => {
                   <InputLabel id="select-label">Activity Type</InputLabel>
                   <Select
                     labelId="select-label"
-                    value={filter as ActivityType}
+                    value={(filter as ActivityType) ?? ""}
                     label="Activity Type"
                     onChange={handleFilterChange}
                   >
@@ -435,9 +501,9 @@ const HomePage = () => {
                 </div>
               )}
             </div>
-            {error && (
+            {dateError && (
               <div className="self-center">
-                <p className="text-red-500 m-0">{error}</p>
+                <p className="text-red-500 m-0">{dateError}</p>
               </div>
             )}
             {selectedAthletes && (
@@ -478,7 +544,9 @@ const HomePage = () => {
             )}
             <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
               <DialogTitle>Select athletes</DialogTitle>
-              <div className="mx-6 mb-2 text-slate-500">Selecting {dialogSelectedAthletes.length} new athletes</div>
+              <div className="mx-6 mb-2 text-slate-500">
+                Selecting {dialogSelectedAthletes.length} new athletes
+              </div>
               <DialogContent className="min-w-[160px] mx-6 px-8 border-solid border border-slate-200 rounded shadow-inner">
                 <FormGroup>
                   {getUniqueNames(true).map((name, index) =>
@@ -499,9 +567,10 @@ const HomePage = () => {
                     sortModel: [{ field: "distance", sort: "desc" }],
                   },
                   pagination: {
-                    paginationModel: { pageSize: 20 },
+                    paginationModel: { pageSize: 25 },
                   },
                 }}
+                pageSizeOptions={[10, 25, 50, 100]}
                 sx={{
                   "& .MuiDataGrid-virtualScroller": {
                     minHeight: "50px",
@@ -511,6 +580,17 @@ const HomePage = () => {
             </div>
           </div>
         )}
+      </div>
+      <div>
+        <Button
+          size="small"
+          onClick={clearData}
+          sx={{
+            color: "#94a3b8",
+          }}
+        >
+          Clear password and local data
+        </Button>
       </div>
     </main>
   )
