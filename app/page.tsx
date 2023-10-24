@@ -376,6 +376,10 @@ const HomePage = () => {
       })
       return names.join(",")
     })
+    closeAndResetDialog()
+  }
+
+  const closeAndResetDialog = () => {
     setDialogOpen(false)
     setDialogSelectedAthletes([])
   }
@@ -643,7 +647,7 @@ const HomePage = () => {
             {selectedAthletes && (
               <div className="flex flex-col lg:flex-row p-3 mt-2 gap-3 items-center bg-slate-100 border border-solid border-slate-200 shadow-inner rounded">
                 <div className="self-center lg:self-start h-8 flex items-center">
-                  <p className="m-0 text-slate-700">Selected Athletes</p>
+                  <p className="m-0 text-slate-700 text-center">Selected Athletes</p>
                 </div>
                 <div className="flex-1 flex flex-row gap-3 flex-wrap justify-center">
                   {selectedAthletes
@@ -693,7 +697,8 @@ const HomePage = () => {
                 </div>
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleSelectAthletes}>Select</Button>
+                <Button onClick={closeAndResetDialog}>Cancel</Button>
+                <Button onClick={handleSelectAthletes} variant="contained">Select</Button>
               </DialogActions>
             </Dialog>
             <div className="flex-1 box-border mt-2">
