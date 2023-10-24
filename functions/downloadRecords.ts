@@ -32,15 +32,15 @@ export default async function downloadRecords(password: string) {
   // Download the records using the decrypted SAS token
   const sasUrlWithToken = `${SAS_URL}?${decryptedSasToken}`
   try {
-    const response = await fetch(sasUrlWithToken);
+    const response = await fetch(sasUrlWithToken)
     if (response.ok) {
-      const jsonText = await response.text();
-      const jsonArray = JSON.parse(jsonText);
-      return jsonArray;
+      const jsonText = await response.text()
+      const jsonArray = JSON.parse(jsonText)
+      return jsonArray
     } else {
-      throw new Error("Failed to download records");
+      throw new Error("Failed to download records")
     }
   } catch (error) {
-    throw new Error("Failed to connect to the server");
+    throw new Error("Failed to connect to the server")
   }
 }
