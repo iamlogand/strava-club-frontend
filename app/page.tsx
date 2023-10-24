@@ -1,6 +1,6 @@
 "use client"
 
-import { MouseEventHandler, useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Record, { RecordData } from "@/classes/record"
 import downloadRecords from "@/functions/downloadRecords"
 import { DataGrid } from "@mui/x-data-grid"

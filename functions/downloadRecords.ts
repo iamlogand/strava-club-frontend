@@ -15,7 +15,7 @@ export default async function downloadRecords(password: string) {
   // Decrypt the encrypted SAS token using the password
   let decryptedSasToken = ""
   try {
-    // Password is the decryption key
+    // Password is the encryption key
     decryptedSasToken = CryptoJS.AES.decrypt(
       ENCRYPTED_SAS_TOKEN,
       password
