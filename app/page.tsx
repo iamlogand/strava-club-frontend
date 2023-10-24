@@ -232,41 +232,47 @@ const HomePage = () => {
       headerName: "Name",
       width: 130,
       headerClassName: "grid_header",
+      type: "string",
     },
-    { field: "date", headerName: "Date", width: 130 },
-    { field: "type", headerName: "Type", width: 150 },
+    { field: "date", headerName: "Date", width: 130, type: "string" },
+    { field: "type", headerName: "Type", width: 150, type: "string" },
     {
       field: "distance",
       headerName: "Distance (km)",
       width: 150,
+      type: "number",
       renderCell: (params: GridCellParams) =>
-        params.value ? params.value : "-",
+        params.value ? <>{params.value}</> : "-",
     },
     {
       field: "elapsedTime",
       headerName: "Elapsed time",
       width: 150,
+      type: "number",
       renderCell: (params: GridCellParams) =>
-        params.value ? formatMinutesToTime(params.value as number) : "-",
+        params.value ? <>{formatMinutesToTime(params.value as number)}</> : <>-</>,
     },
     {
       field: "totalElevationGain",
       headerName: "Elevation (m)",
       width: 130,
+      type: "number",
       renderCell: (params: GridCellParams) =>
-        params.value ? params.value : "-",
+        params.value ? <>{params.value}</> : <>-</>,
     },
     {
       field: "description",
       headerName: "Description",
       width: 250,
+      type: "string",
     },
     {
       field: "pace",
       headerName: "Pace",
-      width: 180,
+      width: 150,
+      type: "number",
       renderCell: (params: GridCellParams) =>
-        params.value ? formatMinutesToTime(params.value as number) : "-",
+        params.value ? <>{formatMinutesToTime(params.value as number)}</> : <>-</>,
     },
   ]
 
@@ -287,28 +293,37 @@ const HomePage = () => {
       headerName: "Name",
       width: 130,
       headerClassName: "grid_header",
+      type: "string",
     },
-    { field: "distance", headerName: "Distance (km)", width: 180 },
+    {
+      field: "distance",
+      headerName: "Distance (km)",
+      width: 180,
+      type: "number",
+    },
     {
       field: "elapsedTime",
       headerName: "Elapsed time",
       width: 180,
+      type: "number",
       renderCell: (params: GridCellParams) =>
-        params.value ? formatMinutesToTime(params.value as number) : "-",
+        params.value ? <>{formatMinutesToTime(params.value as number)}</> : <>-</>,
     },
     {
       field: "totalElevationGain",
       headerName: "Elevation (m)",
       width: 180,
+      type: "number",
       renderCell: (params: GridCellParams) =>
-        params.value ? params.value : "-",
+        params.value ? <>{params.value}</> : <>-</>,
     },
     {
       field: "pace",
       headerName: "Pace",
       width: 180,
+      type: "number",
       renderCell: (params: GridCellParams) =>
-        params.value ? formatMinutesToTime(params.value as number) : "-",
+        params.value ? <>{formatMinutesToTime(params.value as number)}</> : <>-</>,
     },
   ]
 
