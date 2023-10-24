@@ -1,14 +1,46 @@
-const CryptoJS = require("crypto-js");
+const CryptoJS = require("crypto-js")
+
+const SAS_URL =
+  "https://stravafunctionappautorek.blob.core.windows.net/records2/records.json"
+const ENCRYPTED_SAS_TOKEN =
+  "U2FsdGVkX1/6Z4alzcNhwWWYU7yi510sxv6k2VkSD94MYPfYokfTtFaJqqpii6dEc50fiJMaRRdNgbI09fgAknu34nLE80gNAo8AlTEtbgnW65EHiqTbGvsDxyb2vpA3AtEFJJO3fuX0dDispR4hIXL8sKC4qsnV2WNK7wBsaBclOhU9VYjV336BoeThi82tv08tP5fHe5NWLjSUpT3yYw=="
+const DECRYPTED_SAS_TOKEN_LENGTH = 134
 
 export default async function downloadRecords(password: string) {
-  const sasUrl = CryptoJS.AES.decrypt(password, "key").toString(CryptoJS.enc.Utf8)
-  const response = await fetch(sasUrl)
+  // Validate the password
+  if (password.length < 8 || password.length > 32) {
+    throw new Error("Invalid password")
+  }
 
-  if (response.ok) {
-    const jsonText = await response.text()
-    const jsonArray = JSON.parse(jsonText)
-    return jsonArray
-  } else {
-    throw new Error("Failed to download records")
+  // Decrypt the encrypted SAS token using the password
+  let decryptedSasToken = ""
+  try {
+    // Password is the decryption key
+    decryptedSasToken = CryptoJS.AES.decrypt(
+      ENCRYPTED_SAS_TOKEN,
+      password
+    ).toString(CryptoJS.enc.Utf8)
+  } catch (error) {
+    throw new Error("Invalid password")
+  }
+
+  // Validate the decrypted token
+  if (decryptedSasToken.length !== DECRYPTED_SAS_TOKEN_LENGTH) {
+    throw new Error("Invalid password")
+  }
+
+  // Download the records using the decrypted SAS token
+  const sasUrlWithToken = `${SAS_URL}?${decryptedSasToken}`
+  try {
+    const response = await fetch(sasUrlWithToken);
+    if (response.ok) {
+      const jsonText = await response.text();
+      const jsonArray = JSON.parse(jsonText);
+      return jsonArray;
+    } else {
+      throw new Error("Failed to download records");
+    }
+  } catch (error) {
+    throw new Error("Failed to connect to the server");
   }
 }
