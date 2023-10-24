@@ -38,6 +38,10 @@ import GroupRemoveIcon from "@mui/icons-material/GroupRemove"
 import useLocalStorage from "@/functions/useLocalStorage"
 import getPace from "@/functions/getPace"
 import formatMinutesToTime from "@/functions/formatTime"
+import DirectionsWalkIcon from "@mui/icons-material/DirectionsWalk"
+import DirectionsRunIcon from "@mui/icons-material/DirectionsRun"
+import DirectionsBikeIcon from "@mui/icons-material/DirectionsBike"
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter"
 
 type ActivityType =
   | ""
@@ -430,7 +434,7 @@ const HomePage = () => {
       <h1 className="text-2xl font-bold text-center m-0 mb-2 leading-none text-white">
         AutoRek Strava Club
       </h1>
-      <div className="flex-1 w-full max-w-[1400px] flex flex-col box-border bg-white shadow rounded">
+      <div className="flex-1 w-full max-w-[1300px] flex flex-col box-border bg-white shadow rounded">
         <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t shadow border-0 border-b border-solid border-slate-300">
           <div className="flex gap-6 flex justify-center">
             <Tabs
@@ -476,13 +480,22 @@ const HomePage = () => {
                     value={(filter as ActivityType) ?? ""}
                     label="Activity Type"
                     onChange={handleFilterChange}
+                    sx={{"& .MuiSelect-select": {display: "flex"}}}
                   >
-                    <MenuItem value={"Run"}>Run</MenuItem>
-                    <MenuItem value={"Walk"}>Walk</MenuItem>
-                    <MenuItem value={"Ride"}>Ride</MenuItem>
-                    <MenuItem value={"VirtualRide"}>Virtual Ride</MenuItem>
+                    <MenuItem value={"Run"}>
+                      <DirectionsRunIcon className="mr-3" /> Run
+                    </MenuItem>
+                    <MenuItem value={"Walk"}>
+                      <DirectionsWalkIcon className="mr-3" /> Walk
+                    </MenuItem>
+                    <MenuItem value={"Ride"}>
+                      <DirectionsBikeIcon className="mr-3" /> Ride
+                    </MenuItem>
+                    <MenuItem value={"VirtualRide"}>
+                      <DirectionsBikeIcon className="mr-3" /> Virtual Ride
+                    </MenuItem>
                     <MenuItem value={"WeightTraining"}>
-                      Weight Training
+                      <FitnessCenterIcon className="mr-3" /> Weight Training
                     </MenuItem>
                   </Select>
                 </FormControl>
