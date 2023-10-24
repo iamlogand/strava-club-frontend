@@ -424,14 +424,15 @@ const HomePage = () => {
       onDelete={() => handleUnselectAthlete(name)}
       sx={{
         color: "white",
-        backgroundColor: "#64748b",
+        backgroundColor: "#059669",
         "& .MuiChip-deleteIcon": {
-          color: "#94a3b8",
+          color: "#34d399",
           "&:hover": {
-            color: "#cbd5e1",
+            color: "#a7f3d0",
           },
         },
       }}
+      className="shadow"
     />
   )
 
@@ -450,9 +451,9 @@ const HomePage = () => {
 
   if (loading === true || tab === null)
     return (
-      <main className="flex flex-col h-screen w-screen justify-center items-center bg-slate-700">
-        <p className="text-white">Loading</p>
-        <div className="text-white">
+      <main className="flex flex-col h-screen w-screen justify-center items-center bg-slate-900 text-emerald-400">
+        <p>Loading</p>
+        <div>
           <CircularProgress color="inherit" />
         </div>
       </main>
@@ -460,9 +461,9 @@ const HomePage = () => {
 
   if (records.length === 0)
     return (
-      <main className="flex h-screen w-screen justify-center items-center p-4 box-border bg-slate-700">
+      <main className="flex h-screen w-screen justify-center items-center p-4 box-border bg-slate-900">
         <form className="flex-1 max-w-[400px] flex flex-col gap-4 p-8 bg-white shadow rounded">
-          <h1 className="m-0 text-xl">AutoRek Strava Club</h1>
+          <h1 className="m-0 text-xl text-emerald-600">AutoRek Strava Club</h1>
           <p className="m-0 mb-2">
             A valid password is required to access this app
           </p>
@@ -492,8 +493,8 @@ const HomePage = () => {
     )
 
   return (
-    <main className="flex flex-col items-center p-5 gap-2 min-h-screen box-border bg-slate-700">
-      <h1 className="text-2xl font-bold text-center m-0 mb-2 leading-none text-white">
+    <main className="flex flex-col items-center p-5 gap-2 min-h-screen box-border bg-slate-900">
+      <h1 className="text-2xl font-bold text-center m-0 mb-2 leading-none text-emerald-300">
         AutoRek Strava Club
       </h1>
       <div className="flex-1 w-full max-w-[1300px] flex flex-col box-border bg-white shadow rounded">
@@ -503,6 +504,7 @@ const HomePage = () => {
               value={tab}
               onChange={handleTabChange}
               aria-label="basic tabs example"
+              sx={{color: "black"}}
             >
               <Tab label="Activities" value="activities" />
               <Tab label="Leader Boards" value="leaderBoards" />
@@ -639,7 +641,7 @@ const HomePage = () => {
               </div>
             )}
             {selectedAthletes && (
-              <div className="flex flex-col lg:flex-row p-3 mt-2 gap-x-3 gap-y-2 items-center bg-slate-300 rounded">
+              <div className="flex flex-col lg:flex-row p-3 mt-2 gap-3 items-center bg-slate-100 border border-solid border-slate-200 shadow-inner rounded">
                 <div className="self-center lg:self-start h-8 flex items-center">
                   <p className="m-0 text-slate-700">Selected Athletes</p>
                 </div>
@@ -718,10 +720,10 @@ const HomePage = () => {
           size="small"
           onClick={clearData}
           sx={{
-            color: "#94a3b8",
+            color: "#4ade80",
           }}
         >
-          Clear password and local data
+          Sign out
         </Button>
       </div>
     </main>
