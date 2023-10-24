@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useState } from "react"
 import Record, { RecordData } from "@/classes/record"
 import downloadRecords from "@/functions/downloadRecords"
-import { DataGrid } from "@mui/x-data-grid"
-import { formatDate } from "@/functions/formatDate"
+import { DataGrid, GridCellParams } from "@mui/x-data-grid"
+import formatDate from "@/functions/formatDate"
 import {
   Button,
   Checkbox,
@@ -36,8 +36,16 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd"
 import GroupAddIcon from "@mui/icons-material/GroupAdd"
 import GroupRemoveIcon from "@mui/icons-material/GroupRemove"
 import useLocalStorage from "@/functions/useLocalStorage"
+import getPace from "@/functions/getPace"
+import formatMinutesToTime from "@/functions/formatTime"
 
-type ActivityType = "" | "Run" | "Walk" | "Ride"
+type ActivityType =
+  | ""
+  | "Run"
+  | "Walk"
+  | "Ride"
+  | "VirtualRide"
+  | "WeightTraining"
 
 const HomePage = () => {
   const [password, setPassword] = useLocalStorage<string>("password", "")
@@ -201,10 +209,11 @@ const HomePage = () => {
       name: record.name,
       date: formatDate(record.date),
       type: record.type,
-      distance: Math.round(record.distance) / 1000,
-      elapsedTime: Math.round((record.elapsedTime * 1) / 6) / 10,
-      totalElevationGain: Math.round(record.totalElevationGain),
+      distance: Math.round(record.distance / 10) / 100,
+      elapsedTime: record.elapsedTime / 60,
+      totalElevationGain: record.totalElevationGain,
       description: record.description,
+      pace: getPace(record.elapsedTime, record.distance),
     }
   })
 
@@ -217,19 +226,33 @@ const HomePage = () => {
     },
     { field: "date", headerName: "Date", width: 130 },
     { field: "type", headerName: "Type", width: 150 },
-    { field: "distance", headerName: "Distance / km", width: 150 },
-    { field: "elapsedTime", headerName: "Elapsed time / min", width: 150 },
-    { field: "totalElevationGain", headerName: "Elevation / m", width: 130 },
+    { field: "distance", headerName: "Distance (km)", width: 150 },
+    {
+      field: "elapsedTime",
+      headerName: "Elapsed time",
+      width: 150,
+      renderCell: (params: GridCellParams) =>
+        formatMinutesToTime(params.value as number),
+    },
+    { field: "totalElevationGain", headerName: "Elevation (m)", width: 130 },
     { field: "description", headerName: "Description", width: 250 },
+    {
+      field: "pace",
+      headerName: "Pace",
+      width: 180,
+      renderCell: (params: GridCellParams) =>
+        formatMinutesToTime(params.value as number),
+    },
   ]
 
   const aggregateRows = aggregates.map((aggregate, index) => {
     return {
       id: index,
       name: aggregate.name,
-      distance: Math.round(aggregate.distance) / 1000,
-      elapsedTime: Math.round((aggregate.elapsedTime * 1) / 6) / 10,
+      distance: Math.round(aggregate.distance / 10) / 100,
+      elapsedTime: aggregate.elapsedTime / 60,
       totalElevationGain: Math.round(aggregate.totalElevationGain),
+      pace: getPace(aggregate.elapsedTime, aggregate.distance),
     }
   })
 
@@ -240,9 +263,22 @@ const HomePage = () => {
       width: 130,
       headerClassName: "grid_header",
     },
-    { field: "distance", headerName: "Distance / km", width: 180 },
-    { field: "elapsedTime", headerName: "Elapsed time / min", width: 180 },
-    { field: "totalElevationGain", headerName: "Elevation / m", width: 180 },
+    { field: "distance", headerName: "Distance (km)", width: 180 },
+    {
+      field: "elapsedTime",
+      headerName: "Elapsed time",
+      width: 180,
+      renderCell: (params: GridCellParams) =>
+        formatMinutesToTime(params.value as number),
+    },
+    { field: "totalElevationGain", headerName: "Elevation (m)", width: 180 },
+    {
+      field: "pace",
+      headerName: "Pace",
+      width: 180,
+      renderCell: (params: GridCellParams) =>
+        formatMinutesToTime(params.value as number),
+    },
   ]
 
   const handleFilterChange = (event: SelectChangeEvent) => {
@@ -394,7 +430,7 @@ const HomePage = () => {
       <h1 className="text-2xl font-bold text-center m-0 mb-2 leading-none text-white">
         AutoRek Strava Club
       </h1>
-      <div className="flex-1 w-full max-w-[1200px] flex flex-col box-border bg-white shadow rounded">
+      <div className="flex-1 w-full max-w-[1400px] flex flex-col box-border bg-white shadow rounded">
         <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t shadow border-0 border-b border-solid border-slate-300">
           <div className="flex gap-6 flex justify-center">
             <Tabs
@@ -444,6 +480,10 @@ const HomePage = () => {
                     <MenuItem value={"Run"}>Run</MenuItem>
                     <MenuItem value={"Walk"}>Walk</MenuItem>
                     <MenuItem value={"Ride"}>Ride</MenuItem>
+                    <MenuItem value={"VirtualRide"}>Virtual Ride</MenuItem>
+                    <MenuItem value={"WeightTraining"}>
+                      Weight Training
+                    </MenuItem>
                   </Select>
                 </FormControl>
               </div>
