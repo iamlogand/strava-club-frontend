@@ -42,14 +42,19 @@ import DirectionsWalkIcon from "@mui/icons-material/DirectionsWalk"
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun"
 import DirectionsBikeIcon from "@mui/icons-material/DirectionsBike"
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter"
+import SportsSoccerIcon from "@mui/icons-material/SportsSoccer"
+import SelfImprovementIcon from "@mui/icons-material/SelfImprovement"
 
 type ActivityType =
   | ""
   | "Run"
   | "Walk"
   | "Ride"
-  | "VirtualRide"
-  | "WeightTraining"
+  | "Virtual Ride"
+  | "Mountain Bike Ride"
+  | "Weight Training"
+  | "Football"
+  | "Yoga"
 
 const HomePage = () => {
   const [password, setPassword] = useLocalStorage<string>("password", "")
@@ -230,22 +235,38 @@ const HomePage = () => {
     },
     { field: "date", headerName: "Date", width: 130 },
     { field: "type", headerName: "Type", width: 150 },
-    { field: "distance", headerName: "Distance (km)", width: 150 },
+    {
+      field: "distance",
+      headerName: "Distance (km)",
+      width: 150,
+      renderCell: (params: GridCellParams) =>
+        params.value ? params.value : "-",
+    },
     {
       field: "elapsedTime",
       headerName: "Elapsed time",
       width: 150,
       renderCell: (params: GridCellParams) =>
-        formatMinutesToTime(params.value as number),
+        params.value ? formatMinutesToTime(params.value as number) : "-",
     },
-    { field: "totalElevationGain", headerName: "Elevation (m)", width: 130 },
-    { field: "description", headerName: "Description", width: 250 },
+    {
+      field: "totalElevationGain",
+      headerName: "Elevation (m)",
+      width: 130,
+      renderCell: (params: GridCellParams) =>
+        params.value ? params.value : "-",
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 250,
+    },
     {
       field: "pace",
       headerName: "Pace",
       width: 180,
       renderCell: (params: GridCellParams) =>
-        formatMinutesToTime(params.value as number),
+        params.value ? formatMinutesToTime(params.value as number) : "-",
     },
   ]
 
@@ -273,15 +294,21 @@ const HomePage = () => {
       headerName: "Elapsed time",
       width: 180,
       renderCell: (params: GridCellParams) =>
-        formatMinutesToTime(params.value as number),
+        params.value ? formatMinutesToTime(params.value as number) : "-",
     },
-    { field: "totalElevationGain", headerName: "Elevation (m)", width: 180 },
+    {
+      field: "totalElevationGain",
+      headerName: "Elevation (m)",
+      width: 180,
+      renderCell: (params: GridCellParams) =>
+        params.value ? params.value : "-",
+    },
     {
       field: "pace",
       headerName: "Pace",
       width: 180,
       renderCell: (params: GridCellParams) =>
-        formatMinutesToTime(params.value as number),
+        params.value ? formatMinutesToTime(params.value as number) : "-",
     },
   ]
 
@@ -480,22 +507,39 @@ const HomePage = () => {
                     value={(filter as ActivityType) ?? ""}
                     label="Activity Type"
                     onChange={handleFilterChange}
-                    sx={{"& .MuiSelect-select": {display: "flex"}}}
+                    sx={{ "& .MuiSelect-select": { display: "flex" } }}
                   >
                     <MenuItem value={"Run"}>
-                      <DirectionsRunIcon className="mr-3" /> Run
+                      <DirectionsRunIcon className="mr-3" />
+                      Run
                     </MenuItem>
                     <MenuItem value={"Walk"}>
-                      <DirectionsWalkIcon className="mr-3" /> Walk
+                      <DirectionsWalkIcon className="mr-3" />
+                      Walk
                     </MenuItem>
                     <MenuItem value={"Ride"}>
-                      <DirectionsBikeIcon className="mr-3" /> Ride
+                      <DirectionsBikeIcon className="mr-3" />
+                      Ride
                     </MenuItem>
-                    <MenuItem value={"VirtualRide"}>
-                      <DirectionsBikeIcon className="mr-3" /> Virtual Ride
+                    <MenuItem value={"Virtual Ride"}>
+                      <DirectionsBikeIcon className="mr-3" />
+                      Virtual Ride
                     </MenuItem>
-                    <MenuItem value={"WeightTraining"}>
-                      <FitnessCenterIcon className="mr-3" /> Weight Training
+                    <MenuItem value={"Mountain Bike Ride"}>
+                      <DirectionsBikeIcon className="mr-3" />
+                      Mountain Bike Ride
+                    </MenuItem>
+                    <MenuItem value={"Weight Training"}>
+                      <FitnessCenterIcon className="mr-3" />
+                      Weight Training
+                    </MenuItem>
+                    <MenuItem value={"Football"}>
+                      <SportsSoccerIcon className="mr-3" />
+                      Football
+                    </MenuItem>
+                    <MenuItem value={"Yoga"}>
+                      <SelfImprovementIcon className="mr-3" />
+                      Yoga
                     </MenuItem>
                   </Select>
                 </FormControl>

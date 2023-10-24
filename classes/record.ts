@@ -1,3 +1,5 @@
+import { formatActivityName } from "@/functions/formatActivityName"
+
 interface Athlete {
   firstname: string
   lastname: string
@@ -28,7 +30,7 @@ class Record {
     this.distance = data.distance
     this.elapsedTime = data.elapsed_time
     this.totalElevationGain = data.total_elevation_gain
-    this.type = data.sport_type
+    this.type = formatActivityName(data.sport_type)
     this.date = new Date(data.timestamp)
   }
 }
