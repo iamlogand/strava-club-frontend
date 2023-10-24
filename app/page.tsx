@@ -44,17 +44,9 @@ import DirectionsBikeIcon from "@mui/icons-material/DirectionsBike"
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter"
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer"
 import SelfImprovementIcon from "@mui/icons-material/SelfImprovement"
-
-type ActivityType =
-  | ""
-  | "Run"
-  | "Walk"
-  | "Ride"
-  | "Virtual Ride"
-  | "Mountain Bike Ride"
-  | "Weight Training"
-  | "Football"
-  | "Yoga"
+import AllInclusiveIcon from "@mui/icons-material/AllInclusive"
+import ActivityType from "@/types/ActivityType"
+import getAggregateColumnVisibilityModel from "@/functions/getColumnVisibilityModel"
 
 const HomePage = () => {
   const [password, setPassword] = useLocalStorage<string>("password", "")
@@ -127,7 +119,7 @@ const HomePage = () => {
       records.forEach((record) => {
         if (
           record.name == name &&
-          record.type == filter &&
+          (filter === "All" || record.type == filter) &&
           (!startDate || record.date >= new Date(startDate as string)) &&
           (!endDate ||
             record.date <=
@@ -189,6 +181,11 @@ const HomePage = () => {
     if (!tab || (tab !== "activities" && tab !== "leaderBoards"))
       setTabToDefault()
   }, [tab, setTab, setTabToDefault])
+
+  useEffect(() => {
+    // Default to all activities type
+    if (filter === "" || filter == null) setFilter("All")
+  }, [filter, setFilter])
 
   useEffect(() => {
     // Check start date is not after end date
@@ -550,6 +547,10 @@ const HomePage = () => {
                     onChange={handleFilterChange}
                     sx={{ "& .MuiSelect-select": { display: "flex" } }}
                   >
+                    <MenuItem value={"All"}>
+                      <AllInclusiveIcon className="mr-3" />
+                      All
+                    </MenuItem>
                     <MenuItem value={"Run"}>
                       <DirectionsRunIcon className="mr-3" />
                       Run
@@ -647,7 +648,9 @@ const HomePage = () => {
             {selectedAthletes && (
               <div className="flex flex-col lg:flex-row p-3 mt-2 gap-3 items-center bg-slate-100 border border-solid border-slate-200 shadow-inner rounded">
                 <div className="self-center lg:self-start h-8 flex items-center">
-                  <p className="m-0 text-slate-700 text-center">Selected Athletes</p>
+                  <p className="m-0 text-slate-700 text-center">
+                    Selected Athletes
+                  </p>
                 </div>
                 <div className="flex-1 flex flex-row gap-3 flex-wrap justify-center">
                   {selectedAthletes
@@ -698,7 +701,9 @@ const HomePage = () => {
               </DialogContent>
               <DialogActions>
                 <Button onClick={closeAndResetDialog}>Cancel</Button>
-                <Button onClick={handleSelectAthletes} variant="contained">Select</Button>
+                <Button onClick={handleSelectAthletes} variant="contained">
+                  Select
+                </Button>
               </DialogActions>
             </Dialog>
             <div className="flex-1 box-border mt-2">
@@ -719,6 +724,9 @@ const HomePage = () => {
                     minHeight: "50px",
                   },
                 }}
+                columnVisibilityModel={getAggregateColumnVisibilityModel(
+                  filter as ActivityType
+                )}
               />
             </div>
           </div>
