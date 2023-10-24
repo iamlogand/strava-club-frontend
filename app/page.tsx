@@ -504,7 +504,7 @@ const HomePage = () => {
               value={tab}
               onChange={handleTabChange}
               aria-label="basic tabs example"
-              sx={{color: "black"}}
+              sx={{ color: "black" }}
             >
               <Tab label="Activities" value="activities" />
               <Tab label="Leader Boards" value="leaderBoards" />
@@ -676,17 +676,21 @@ const HomePage = () => {
                 </div>
               </div>
             )}
-            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+            <Dialog
+              open={dialogOpen}
+              onClose={() => setDialogOpen(false)}
+              maxWidth="lg"
+            >
               <DialogTitle>Select athletes</DialogTitle>
               <div className="mx-6 mb-2 text-slate-500">
                 Selecting {dialogSelectedAthletes.length} new athletes
               </div>
-              <DialogContent className="min-w-[160px] mx-6 px-8 border-solid border border-slate-200 rounded shadow-inner">
-                <FormGroup>
+              <DialogContent className="mx-6 px-8 border-solid border border-slate-200 rounded shadow-inner">
+                <div className="sm:w-[300px] md:w-[450px] lg:w-[600px] xl:w-[750px] grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))]">
                   {getUniqueNames(true).map((name, index) =>
                     renderSelectAthleteCheckbox(name, index)
                   )}
-                </FormGroup>
+                </div>
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleSelectAthletes}>Select</Button>
