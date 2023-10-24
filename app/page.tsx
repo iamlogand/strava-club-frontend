@@ -676,7 +676,7 @@ const HomePage = () => {
                 columns={aggregateColumns}
                 initialState={{
                   sorting: {
-                    sortModel: [{ field: "distance", sort: "desc" }],
+                    sortModel: [{ field: "elapsedTime", sort: "desc" }],
                   },
                   pagination: {
                     paginationModel: { pageSize: 25 },
