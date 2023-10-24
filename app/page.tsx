@@ -364,7 +364,7 @@ const HomePage = () => {
     return (
       <main className="flex h-screen w-screen justify-center items-center p-4 box-border bg-slate-700">
         <div className="flex-1 max-w-[400px] flex flex-col gap-4 p-8 bg-white shadow rounded">
-          <h1 className="m-0 text-xl">Strava Club</h1>
+          <h1 className="m-0 text-xl">AutoRek Strava Club</h1>
           <p className="m-0 mb-2">
             A valid password is required to access this app
           </p>
@@ -392,7 +392,7 @@ const HomePage = () => {
   return (
     <main className="flex flex-col items-center p-5 gap-2 min-h-screen box-border bg-slate-700">
       <h1 className="text-2xl font-bold text-center m-0 mb-2 leading-none text-white">
-        Strava Club
+        AutoRek Strava Club
       </h1>
       <div className="flex-1 w-full max-w-[1200px] flex flex-col box-border bg-white shadow rounded">
         <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t shadow border-0 border-b border-solid border-slate-300">

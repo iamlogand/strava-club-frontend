@@ -1,9 +1,7 @@
 const CryptoJS = require("crypto-js")
 
-const SAS_URL =
-  "https://stravafunctionappautorek.blob.core.windows.net/records2/records.json"
-const ENCRYPTED_SAS_TOKEN =
-  "U2FsdGVkX1/6Z4alzcNhwWWYU7yi510sxv6k2VkSD94MYPfYokfTtFaJqqpii6dEc50fiJMaRRdNgbI09fgAknu34nLE80gNAo8AlTEtbgnW65EHiqTbGvsDxyb2vpA3AtEFJJO3fuX0dDispR4hIXL8sKC4qsnV2WNK7wBsaBclOhU9VYjV336BoeThi82tv08tP5fHe5NWLjSUpT3yYw=="
+const SAS_URL = process.env.NEXT_PUBLIC_SAS_URL
+const ENCRYPTED_SAS_TOKEN = process.env.NEXT_PUBLIC_ENCRYPTED_SAS_TOKEN
 const DECRYPTED_SAS_TOKEN_LENGTH = 134
 
 export default async function downloadRecords(password: string) {
