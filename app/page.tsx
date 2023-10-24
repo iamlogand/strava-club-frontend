@@ -250,7 +250,11 @@ const HomePage = () => {
       width: 150,
       type: "number",
       renderCell: (params: GridCellParams) =>
-        params.value ? <>{formatMinutesToTime(params.value as number)}</> : <>-</>,
+        params.value ? (
+          <>{formatMinutesToTime(params.value as number)}</>
+        ) : (
+          <>-</>
+        ),
     },
     {
       field: "totalElevationGain",
@@ -272,7 +276,11 @@ const HomePage = () => {
       width: 150,
       type: "number",
       renderCell: (params: GridCellParams) =>
-        params.value ? <>{formatMinutesToTime(params.value as number)}</> : <>-</>,
+        params.value ? (
+          <>{formatMinutesToTime(params.value as number)}</>
+        ) : (
+          <>-</>
+        ),
     },
   ]
 
@@ -307,7 +315,11 @@ const HomePage = () => {
       width: 180,
       type: "number",
       renderCell: (params: GridCellParams) =>
-        params.value ? <>{formatMinutesToTime(params.value as number)}</> : <>-</>,
+        params.value ? (
+          <>{formatMinutesToTime(params.value as number)}</>
+        ) : (
+          <>-</>
+        ),
     },
     {
       field: "totalElevationGain",
@@ -323,7 +335,11 @@ const HomePage = () => {
       width: 180,
       type: "number",
       renderCell: (params: GridCellParams) =>
-        params.value ? <>{formatMinutesToTime(params.value as number)}</> : <>-</>,
+        params.value ? (
+          <>{formatMinutesToTime(params.value as number)}</>
+        ) : (
+          <>-</>
+        ),
     },
   ]
 
@@ -432,7 +448,7 @@ const HomePage = () => {
     />
   )
 
-  if (loading === true)
+  if (loading === true || tab === null)
     return (
       <main className="flex flex-col h-screen w-screen justify-center items-center bg-slate-700">
         <p className="text-white">Loading</p>
@@ -445,7 +461,7 @@ const HomePage = () => {
   if (records.length === 0)
     return (
       <main className="flex h-screen w-screen justify-center items-center p-4 box-border bg-slate-700">
-        <div className="flex-1 max-w-[400px] flex flex-col gap-4 p-8 bg-white shadow rounded">
+        <form className="flex-1 max-w-[400px] flex flex-col gap-4 p-8 bg-white shadow rounded">
           <h1 className="m-0 text-xl">AutoRek Strava Club</h1>
           <p className="m-0 mb-2">
             A valid password is required to access this app
@@ -463,11 +479,15 @@ const HomePage = () => {
             helperText={connectionError}
           />
           <div className="flex justify-end">
-            <Button size="small" onClick={handlePasswordSubmission}>
+            <Button
+              size="small"
+              onClick={handlePasswordSubmission}
+              type="submit"
+            >
               Connect
             </Button>
           </div>
-        </div>
+        </form>
       </main>
     )
 

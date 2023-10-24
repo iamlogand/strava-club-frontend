@@ -29,16 +29,19 @@ export default async function downloadRecords(password: string) {
 
   // Download the records using the decrypted SAS token
   const sasUrlWithToken = `${SAS_URL}?${decryptedSasToken}`
+
   try {
     const response = await fetch(sasUrlWithToken)
     if (response.ok) {
       const jsonText = await response.text()
       const jsonArray = JSON.parse(jsonText)
       return jsonArray
-    } else {
-      throw new Error("Failed to download records")
     }
-  } catch (error) {
-    throw new Error("Failed to connect to the server")
+  } catch {
+    // You'd think that we should throw an error here, but we don't want to do that because, for
+    // some reason, whenever the first request is made during login, the fetch fails and I can't
+    // work out why. Throwing an exception would make an error appear on the login page every
+    // time someone logs in, which is not what we want.
+    return null
   }
 }
