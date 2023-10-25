@@ -112,9 +112,9 @@ const HomePage = () => {
   const getTotal = useCallback(
     (
       name: string,
-      field: "distance" | "elapsedTime" | "totalElevationGain"
+      field: "count" | "distance" | "elapsedTime" | "totalElevationGain"
     ) => {
-      let totalDistance: number = 0
+      let total: number = 0
       records.forEach((record) => {
         if (
           record.name == name &&
@@ -126,10 +126,10 @@ const HomePage = () => {
                 new Date(endDate as string).getTime() + 24 * 60 * 60 * 1000
               ))
         ) {
-          totalDistance += record[field]
+          total += field === "count" ? 1 : record[field]
         }
       })
-      return totalDistance
+      return total
     },
     [records, filter, startDate, endDate]
   )
@@ -146,12 +146,14 @@ const HomePage = () => {
           selectedNames?.includes(name)
       )
       .forEach((name) => {
+        const count = getTotal(name, "count")
         const totalDistance = getTotal(name, "distance")
         const totalElapsedTime = getTotal(name, "elapsedTime")
         const totalElevationGain = getTotal(name, "totalElevationGain")
         if (totalDistance > 0 || totalElapsedTime > 0)
           aggregates.push({
             name: name,
+            count: count,
             distance: totalDistance,
             elapsedTime: totalElapsedTime,
             totalElevationGain: totalElevationGain,
@@ -235,7 +237,7 @@ const HomePage = () => {
     {
       field: "distance",
       headerName: "Distance (km)",
-      width: 150,
+      width: 130,
       type: "number",
       renderCell: (params: GridCellParams) =>
         params.value ? <>{params.value}</> : "-",
@@ -243,7 +245,7 @@ const HomePage = () => {
     {
       field: "elapsedTime",
       headerName: "Elapsed time",
-      width: 150,
+      width: 130,
       type: "number",
       renderCell: (params: GridCellParams) =>
         params.value ? (
@@ -269,7 +271,7 @@ const HomePage = () => {
     {
       field: "pace",
       headerName: "Pace",
-      width: 150,
+      width: 130,
       type: "number",
       renderCell: (params: GridCellParams) =>
         params.value ? (
@@ -284,6 +286,7 @@ const HomePage = () => {
     return {
       id: index,
       name: aggregate.name,
+      count: aggregate.count,
       distance: Math.round(aggregate.distance / 10) / 100,
       elapsedTime: aggregate.elapsedTime / 60,
       totalElevationGain: Math.round(aggregate.totalElevationGain),
@@ -298,6 +301,12 @@ const HomePage = () => {
       width: 130,
       headerClassName: "grid_header",
       type: "string",
+    },
+    {
+      field: "count",
+      headerName: "Count",
+      width: 150,
+      type: "number",
     },
     {
       field: "distance",
@@ -498,7 +507,7 @@ const HomePage = () => {
       <h1 className="text-2xl font-bold text-center m-0 mb-2 leading-none text-emerald-300">
         AutoRek Strava Club
       </h1>
-      <div className="flex-1 w-full max-w-[1300px] flex flex-col box-border bg-white shadow rounded">
+      <div className="flex-1 w-full max-w-[1250px] flex flex-col box-border bg-white shadow rounded">
         <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t shadow border-0 border-b border-solid border-slate-300">
           <div className="flex gap-6 flex justify-center">
             <Tabs
