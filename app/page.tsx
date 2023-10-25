@@ -305,19 +305,19 @@ const HomePage = () => {
     {
       field: "count",
       headerName: "Count",
-      width: 150,
+      width: 100,
       type: "number",
     },
     {
       field: "distance",
       headerName: "Distance (km)",
-      width: 180,
+      width: 140,
       type: "number",
     },
     {
       field: "elapsedTime",
       headerName: "Elapsed time",
-      width: 180,
+      width: 140,
       type: "number",
       renderCell: (params: GridCellParams) =>
         params.value ? (
@@ -329,7 +329,7 @@ const HomePage = () => {
     {
       field: "totalElevationGain",
       headerName: "Elevation (m)",
-      width: 180,
+      width: 140,
       type: "number",
       renderCell: (params: GridCellParams) =>
         params.value ? <>{params.value}</> : <>-</>,
@@ -337,7 +337,7 @@ const HomePage = () => {
     {
       field: "pace",
       headerName: "Pace",
-      width: 180,
+      width: 140,
       type: "number",
       renderCell: (params: GridCellParams) =>
         params.value ? (
@@ -503,11 +503,14 @@ const HomePage = () => {
     )
 
   return (
-    <main className="flex flex-col items-center p-5 gap-2 min-h-screen box-border bg-slate-900">
+    <main className="flex flex-col items-center p-5 gap-2 min-h-screen box-border">
       <h1 className="text-2xl font-bold text-center m-0 mb-2 leading-none text-emerald-300">
         AutoRek Strava Club
       </h1>
-      <div className="flex-1 w-full max-w-[1250px] flex flex-col box-border bg-white shadow rounded">
+      <div
+        className="flex-1 w-full flex flex-col box-border bg-white shadow rounded"
+        style={{ maxWidth: tab === "leaderBoards" ? 960 : 1250 }}
+      >
         <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t shadow border-0 border-b border-solid border-slate-300">
           <div className="flex gap-6 flex justify-center">
             <Tabs
@@ -521,7 +524,7 @@ const HomePage = () => {
             </Tabs>
           </div>
         </nav>
-        {(tab === "activities" || tab === null) && (
+        {tab !== "leaderBoards" && (
           <div className="h-full box-border p-4">
             <DataGrid
               rows={recordRows}
@@ -544,9 +547,9 @@ const HomePage = () => {
           </div>
         )}
         {tab === "leaderBoards" && (
-          <div className="h-full flex flex-col p-4 mt-2 gap-2 box-border">
+          <div className="h-full flex flex-col p-4 mt-2 gap-2 box-border items-center">
             <div className="flex justify-center gap-4 flex-col items-center lg:flex-row">
-              <div className="w-full max-w-[259px] flex-1">
+              <div className="max-w-[259px]">
                 <FormControl fullWidth>
                   <InputLabel id="select-label">Activity Type</InputLabel>
                   <Select
@@ -602,7 +605,9 @@ const HomePage = () => {
                       label="Start date"
                       value={startDate ? dayjs(parseDate(startDate)) : null}
                       onChange={(newValue) =>
-                        setStartDate(newValue ? newValue.format('YYYY-MM-DD') : null)
+                        setStartDate(
+                          newValue ? newValue.format("YYYY-MM-DD") : null
+                        )
                       }
                       slotProps={{
                         field: {
@@ -619,7 +624,9 @@ const HomePage = () => {
                       label="End date"
                       value={endDate ? dayjs(parseDate(endDate)) : null}
                       onChange={(newValue) =>
-                        setEndDate(newValue ? newValue.format('YYYY-MM-DD') : null)
+                        setEndDate(
+                          newValue ? newValue.format("YYYY-MM-DD") : null
+                        )
                       }
                       slotProps={{
                         field: {
@@ -715,13 +722,13 @@ const HomePage = () => {
                 </Button>
               </DialogActions>
             </Dialog>
-            <div className="flex-1 box-border mt-2">
+            <div className="w-full flex-1 box-border mt-2">
               <DataGrid
                 rows={aggregateRows}
                 columns={aggregateColumns}
                 initialState={{
                   sorting: {
-                    sortModel: [{ field: "elapsedTime", sort: "desc" }],
+                    sortModel: [{ field: "count", sort: "desc" }],
                   },
                   pagination: {
                     paginationModel: { pageSize: 25 },
