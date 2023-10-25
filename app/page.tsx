@@ -401,7 +401,8 @@ const HomePage = () => {
       : handleDialogUnselectAthlete(name)
   }
 
-  const handlePasswordSubmission = () => {
+  const handlePasswordSubmission = (event: any) => {
+    event.preventDefault()
     if (candidatePassword === password) {
       getRecords()
       return
