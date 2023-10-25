@@ -5,3 +5,8 @@ export default function formatDate(date: Date) {
 
   return `${year}-${month}-${day}`
 }
+
+export function parseDate(dateString: string) {
+  const [year, month, day] = dateString.split("-")
+  return new Date(Number(year), Number(month) - 1, Number(day))
+}

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import Record, { RecordData } from "@/classes/record"
 import downloadRecords from "@/functions/downloadRecords"
 import { DataGrid, GridCellParams } from "@mui/x-data-grid"
-import formatDate from "@/functions/formatDate"
+import formatDate, { parseDate } from "@/functions/formatDate"
 import {
   Button,
   Checkbox,
@@ -16,7 +16,6 @@ import {
   DialogTitle,
   FormControl,
   FormControlLabel,
-  FormGroup,
   IconButton,
   InputLabel,
   MenuItem,
@@ -189,7 +188,7 @@ const HomePage = () => {
 
   useEffect(() => {
     // Check start date is not after end date
-    if (startDate && endDate && dayjs(startDate) > dayjs(endDate)) {
+    if (startDate && endDate && parseDate(startDate) > parseDate(endDate)) {
       setDateError("Start date cannot be after end date")
     } else {
       setDateError(null)
@@ -591,9 +590,9 @@ const HomePage = () => {
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       label="Start date"
-                      value={startDate ? dayjs(startDate) : null}
+                      value={startDate ? dayjs(parseDate(startDate)) : null}
                       onChange={(newValue) =>
-                        setStartDate(newValue?.toString() ?? null)
+                        setStartDate(newValue ? newValue.format('YYYY-MM-DD') : null)
                       }
                       slotProps={{
                         field: {
@@ -608,9 +607,9 @@ const HomePage = () => {
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       label="End date"
-                      value={endDate ? dayjs(endDate) : null}
+                      value={endDate ? dayjs(parseDate(endDate)) : null}
                       onChange={(newValue) =>
-                        setEndDate(newValue?.toString() ?? null)
+                        setEndDate(newValue ? newValue.format('YYYY-MM-DD') : null)
                       }
                       slotProps={{
                         field: {
