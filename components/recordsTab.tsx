@@ -88,7 +88,7 @@ const RecordsTab = ({
 
   return (
     <div className="h-full box-border p-4 flex flex-col gap-4">
-      <div className="w-full p-4 flex flex-col items-center border border-solid bg-slate-50 border-gray-300 rounded">
+      <div className="w-full p-4 flex flex-col items-center border border-solid bg-slate-100 border-slate-200 shadow-inner rounded">
         <div className="flex flex-col md:flex-row items-center gap-2">
           <span className="text-center">
             Graph showing activites synced to Strava in the last
