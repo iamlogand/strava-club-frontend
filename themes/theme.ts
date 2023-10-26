@@ -8,6 +8,9 @@ const theme = createTheme({
       dark: "#047857",
     },
   },
+  typography: {
+    "fontFamily": "var(--font-inter)",
+  },
 })
 
 export default theme
