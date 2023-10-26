@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 import Record, { RecordData } from "@/classes/record"
 import downloadRecords from "@/functions/downloadRecords"
-import { DataGrid, GridCellParams } from "@mui/x-data-grid"
+import { DataGrid, GridCellParams, GridSortModel } from "@mui/x-data-grid"
 import formatDate, { parseDate } from "@/functions/formatDate"
 import {
   Button,
@@ -46,6 +46,7 @@ import SelfImprovementIcon from "@mui/icons-material/SelfImprovement"
 import AllInclusiveIcon from "@mui/icons-material/AllInclusive"
 import ActivityType from "@/types/ActivityType"
 import getAggregateColumnVisibilityModel from "@/functions/getColumnVisibilityModel"
+import React from "react"
 
 const HomePage = () => {
   const [password, setPassword] = useLocalStorage<string>("password", "")
@@ -65,6 +66,53 @@ const HomePage = () => {
   const [dialogSelectedAthletes, setDialogSelectedAthletes] = useState<
     string[]
   >([])
+  const [recordsSortQueryState, setRecordsSortQueryState] =
+    useQueryState("recordsSort")
+  const [recordsSortModel, setRecordsSortModel] = React.useState<GridSortModel>(
+    () => {
+      const querySorts = recordsSortQueryState?.split("-")
+      if (querySorts && querySorts.length > 0) {
+        return [
+          {
+            field: querySorts[0],
+            sort: querySorts[1] as "asc" | "desc",
+          },
+        ]
+      } else {
+        return [
+          {
+            field: "date",
+            sort: "desc",
+          },
+        ]
+      }
+    }
+  )
+  const [aggregatesSortQueryState, setAggregatesSortQueryState] =
+    useQueryState("aggregatesSort")
+  const [aggregatesSortModel, setAggregatesSortModel] =
+    React.useState<GridSortModel>(() => {
+      const querySorts = aggregatesSortQueryState?.split("-")
+      if (querySorts && querySorts.length > 0) {
+        return [
+          {
+            field: querySorts[0],
+            sort: querySorts[1] as "asc" | "desc",
+          },
+        ]
+      } else {
+        return [
+          {
+            field: "count",
+            sort: "desc",
+          },
+        ]
+      }
+    })
+  const [paginationModel, setPaginationModel] = React.useState({
+    pageSize: 25,
+    page: 0,
+  })
 
   const getRecords = useCallback(async () => {
     setLoading(true)
@@ -162,34 +210,36 @@ const HomePage = () => {
     return aggregates
   }, [selectedAthletes, getTotal, getUniqueNames])
 
+  // Get records on password change
   useEffect(() => {
     getRecords()
   }, [getRecords])
 
+  // Get aggregates on records change
   useEffect(() => {
     setAggregates(getAggregates())
   }, [records, getAggregates])
 
+  // Delay rerender to ensure MUI tabs are rendered correctly
   const setTabToDefault = useCallback(async () => {
-    // Delay rerender to ensure MUI tabs are rendered correctly
     setTimeout(() => {
       setTab("activities")
     }, 100)
   }, [setTab])
 
+  // Default to activities tab
   useEffect(() => {
-    // Default to activities tab
     if (!tab || (tab !== "activities" && tab !== "leaderBoards"))
       setTabToDefault()
   }, [tab, setTab, setTabToDefault])
 
+  // Default to all activities type
   useEffect(() => {
-    // Default to all activities type
     if (filter === "" || filter == null) setFilter("All")
   }, [filter, setFilter])
 
+  // Check start date is not after end date
   useEffect(() => {
-    // Check start date is not after end date
     if (startDate && endDate && parseDate(startDate) > parseDate(endDate)) {
       setDateError("Start date cannot be after end date")
     } else {
@@ -203,12 +253,45 @@ const HomePage = () => {
     )
   }, [selectedAthletes, getUniqueNames])
 
+  // Close dialog box if all athletes are selected
   useEffect(() => {
-    // Close dialog box if all athletes are selected
     if (areAllAthletesSelected()) {
       setDialogOpen(false)
     }
   }, [selectedAthletes, areAllAthletesSelected])
+
+  // Update records sort model query state
+  useEffect(() => {
+    if (recordsSortModel.length === 0) {
+      setRecordsSortQueryState(null)
+    } else {
+      setRecordsSortQueryState(
+        `${recordsSortModel[0].field}-${recordsSortModel[0].sort}`
+      )
+    }
+  }, [recordsSortModel, setRecordsSortQueryState])
+
+  // Update aggregates sort model query state
+  useEffect(() => {
+    if (aggregatesSortModel.length === 0) {
+      setAggregatesSortQueryState(null)
+    } else {
+      setAggregatesSortQueryState(
+        `${aggregatesSortModel[0].field}-${aggregatesSortModel[0].sort}`
+      )
+    }
+  }, [recordsSortModel, setRecordsSortQueryState])
+
+  // Reset pagination page when tab changes
+  useEffect(() => {
+    // Delay rerender to ensure MUI Data Grid is rendered with correct pagination
+    setTimeout(() => {
+      setPaginationModel((currentModel) => ({
+        ...currentModel,
+        page: 0,
+      }))
+    }, 100)
+  }, [tab, setPaginationModel])
 
   const recordRows = records.map((record, index) => {
     return {
@@ -237,7 +320,7 @@ const HomePage = () => {
     {
       field: "distance",
       headerName: "Distance (km)",
-      width: 130,
+      width: 140,
       type: "number",
       renderCell: (params: GridCellParams) =>
         params.value ? <>{params.value}</> : "-",
@@ -245,7 +328,7 @@ const HomePage = () => {
     {
       field: "elapsedTime",
       headerName: "Elapsed time",
-      width: 130,
+      width: 140,
       type: "number",
       renderCell: (params: GridCellParams) =>
         params.value ? (
@@ -257,7 +340,7 @@ const HomePage = () => {
     {
       field: "totalElevationGain",
       headerName: "Elevation (m)",
-      width: 130,
+      width: 140,
       type: "number",
       renderCell: (params: GridCellParams) =>
         params.value ? <>{params.value}</> : <>-</>,
@@ -509,7 +592,7 @@ const HomePage = () => {
       </h1>
       <div
         className="flex-1 w-full flex flex-col box-border bg-white shadow rounded"
-        style={{ maxWidth: tab === "leaderBoards" ? 960 : 1250 }}
+        style={{ maxWidth: tab === "leaderBoards" ? 950 : 1290 }}
       >
         <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t shadow border-0 border-b border-solid border-slate-300">
           <div className="flex gap-6 flex justify-center">
@@ -529,26 +612,24 @@ const HomePage = () => {
             <DataGrid
               rows={recordRows}
               columns={recordColumns}
-              initialState={{
-                sorting: {
-                  sortModel: [{ field: "date", sort: "desc" }],
-                },
-                pagination: {
-                  paginationModel: { pageSize: 25 },
-                },
-              }}
               pageSizeOptions={[10, 25, 50, 100]}
               sx={{
                 "& .MuiDataGrid-virtualScroller": {
                   minHeight: "50px",
                 },
               }}
+              sortModel={recordsSortModel}
+              onSortModelChange={(newSortModel) =>
+                setRecordsSortModel(newSortModel)
+              }
+              paginationModel={paginationModel}
+              onPaginationModelChange={setPaginationModel}
             />
           </div>
         )}
         {tab === "leaderBoards" && (
           <div className="h-full flex flex-col p-4 mt-2 gap-2 box-border">
-            <div className="flex justify-center gap-4 flex-col items-center lg:flex-row">
+            <div className="flex justify-center gap-4 flex-col items-center lg:justify-start lg:flex-row">
               <div className="w-full max-w-[259px]">
                 <FormControl fullWidth>
                   <InputLabel id="select-label">Activity Type</InputLabel>
@@ -726,14 +807,6 @@ const HomePage = () => {
               <DataGrid
                 rows={aggregateRows}
                 columns={aggregateColumns}
-                initialState={{
-                  sorting: {
-                    sortModel: [{ field: "count", sort: "desc" }],
-                  },
-                  pagination: {
-                    paginationModel: { pageSize: 25 },
-                  },
-                }}
                 pageSizeOptions={[10, 25, 50, 100]}
                 sx={{
                   "& .MuiDataGrid-virtualScroller": {
@@ -743,6 +816,12 @@ const HomePage = () => {
                 columnVisibilityModel={getAggregateColumnVisibilityModel(
                   filter as ActivityType
                 )}
+                sortModel={aggregatesSortModel}
+                onSortModelChange={(newSortModel) =>
+                  setAggregatesSortModel(newSortModel)
+                }
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
               />
             </div>
           </div>
