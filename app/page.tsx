@@ -82,7 +82,7 @@ const HomePage = () => {
       }
     })
   const [paginationModel, setPaginationModel] = React.useState({
-    pageSize: 25,
+    pageSize: 10,
     page: 0,
   })
 
