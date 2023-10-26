@@ -131,7 +131,7 @@ const RecordsTab = ({
             series={[
               {
                 data: getChartData(),
-                label: "Activities Recorded",
+                label: "Activities synced",
                 color: "#00ffaf",
               },
             ]}
