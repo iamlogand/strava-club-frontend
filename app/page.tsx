@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import Record, { RecordData } from "@/classes/record"
 import downloadRecords from "@/functions/downloadRecords"
 import { GridCellParams, GridSortModel } from "@mui/x-data-grid"
-import formatDate, { parseDate } from "@/functions/formatDate"
+import formatDate from "@/functions/formatDate"
 import {
   Button,
   CircularProgress,
@@ -29,6 +29,8 @@ const HomePage = () => {
   const [connectionError, setConnectionError] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(true)
   const [records, setRecords] = useState<Record[]>([])
+  const [daysCount, setDaysCount] = useState<number>(7)
+  const [candidateDaysCount, setCandidateDaysCount] = useState<string>("7")
   const [aggregates, setAggregates] = useState<Aggregate[]>([])
   const [filter, setFilter] = useQueryState("filter")
   const [tab, setTab] = useQueryState("tab")
@@ -36,7 +38,6 @@ const HomePage = () => {
   const [endDate, setEndDate] = useQueryState("endDate")
   const [selectedAthletes, setSelectedAthletes] =
     useQueryState("selectedAthletes")
-  
   const [recordsSortQueryState, setRecordsSortQueryState] =
     useQueryState("recordsSort")
   const [recordsSortModel, setRecordsSortModel] = React.useState<GridSortModel>(
@@ -208,7 +209,6 @@ const HomePage = () => {
   useEffect(() => {
     if (filter === "" || filter == null) setFilter("All")
   }, [filter, setFilter])
-
 
   const areAllAthletesSelected = useCallback(() => {
     return (
@@ -434,7 +434,7 @@ const HomePage = () => {
     return (
       <main className="flex h-screen w-screen justify-center items-center p-4 box-border bg-slate-900">
         <form className="flex-1 max-w-[400px] flex flex-col gap-4 p-8 bg-white shadow rounded">
-          <h1 className="m-0 text-xl text-emerald-600">AutoRek Strava Club</h1>
+          <h1 className="m-0 text-xl text-emerald-600 font-semibold">AutoRek Strava Club</h1>
           <p className="m-0 mb-2">
             A valid password is required to access this app
           </p>
@@ -465,7 +465,10 @@ const HomePage = () => {
 
   return (
     <main className="flex flex-col items-center p-5 gap-2 min-h-screen box-border">
-      <h1 className="text-2xl font-bold text-center m-0 mb-2 leading-none text-emerald-300">
+      <h1
+        className="text-2xl font-normal text-center m-0 mb-2 leading-none"
+        style={{ color: "#00ffaf" }}
+      >
         AutoRek Strava Club
       </h1>
       <div
@@ -487,12 +490,17 @@ const HomePage = () => {
         </nav>
         {tab !== "leaderBoards" && (
           <RecordsTab
+            records={records}
             recordRows={recordRows}
             recordColumns={recordColumns}
             recordsSortModel={recordsSortModel}
             setRecordsSortModel={setRecordsSortModel}
             paginationModel={paginationModel}
             setPaginationModel={setPaginationModel}
+            daysCount={daysCount}
+            setDaysCount={setDaysCount}
+            candidateDaysCount={candidateDaysCount}
+            setCandidateDaysCount={setCandidateDaysCount}
           />
         )}
         {tab === "leaderBoards" && (
