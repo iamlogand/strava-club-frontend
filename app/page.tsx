@@ -547,9 +547,9 @@ const HomePage = () => {
           </div>
         )}
         {tab === "leaderBoards" && (
-          <div className="h-full flex flex-col p-4 mt-2 gap-2 box-border items-center">
+          <div className="h-full flex flex-col p-4 mt-2 gap-2 box-border">
             <div className="flex justify-center gap-4 flex-col items-center lg:flex-row">
-              <div className="max-w-[259px]">
+              <div className="w-full max-w-[259px]">
                 <FormControl fullWidth>
                   <InputLabel id="select-label">Activity Type</InputLabel>
                   <Select
