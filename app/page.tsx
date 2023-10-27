@@ -437,7 +437,7 @@ const HomePage = () => {
       <main className="flex h-screen w-screen justify-center items-center p-4 box-border bg-slate-900">
         <form className="flex-1 max-w-[400px] flex flex-col gap-4 p-8 bg-white shadow rounded">
           <h1 className="m-0 text-xl text-emerald-600 font-semibold">
-            AutoRek Strava Club
+            AutoRek StrARva Club
           </h1>
           <p className="m-0 mb-2">
             A valid password is required to access this app
@@ -473,7 +473,7 @@ const HomePage = () => {
         className="text-2xl font-normal text-center m-0 mb-2 leading-none"
         style={{ color: "#00ffaf" }}
       >
-        AutoRek Strava Club
+        AutoRek StrARva Club
       </h1>
       <div
         className="flex-1 w-full flex flex-col box-border bg-white shadow rounded"
