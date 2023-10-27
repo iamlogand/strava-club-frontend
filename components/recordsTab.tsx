@@ -117,7 +117,7 @@ const RecordsTab = ({
           </div>
         </div>
         <div
-          className="h-[400px] w-full"
+          className="h-[270px] sm:h-[400px] w-full"
           style={{ maxWidth: getChartMaxWidth() }}
         >
           <BarChart

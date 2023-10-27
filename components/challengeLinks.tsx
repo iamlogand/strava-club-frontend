@@ -101,7 +101,7 @@ const GroupLinks = ({
 
   return (
     <div className="flex flex-col gap-1 items-center max-w-[600px]">
-      <span className="text-white">Challenge Leader Boards</span>
+      <span className="text-white text-center">November 2022 Challenge Leader Boards</span>
       <div className="flex gap-x-4 gap-y-1 flex-wrap justify-center">
         {links.map((link, index) => renderLink(link, index))}
       </div>
