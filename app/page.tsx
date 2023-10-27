@@ -480,7 +480,7 @@ const HomePage = () => {
         style={{ maxWidth: tab === "leaderBoards" ? 950 : 1290 }}
       >
         <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t shadow border-0 border-b border-solid border-slate-300">
-          <div className="flex justify-center">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-y-2">
             <Tabs
               value={tab}
               onChange={handleTabChange}
