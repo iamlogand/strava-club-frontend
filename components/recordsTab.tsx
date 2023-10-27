@@ -2,7 +2,7 @@ import formatDate from "@/functions/formatDate"
 import { BarChart } from "@mui/x-charts"
 import { DataGrid } from "@mui/x-data-grid"
 import Record from "@/classes/record"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { TextField } from "@mui/material"
 import addOrdinalSuffix from "@/functions/formatNumber"
 

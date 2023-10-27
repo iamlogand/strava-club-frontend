@@ -4,7 +4,7 @@ const SAS_URL = process.env.NEXT_PUBLIC_SAS_URL
 const ENCRYPTED_SAS_TOKEN = process.env.NEXT_PUBLIC_ENCRYPTED_SAS_TOKEN
 const DECRYPTED_SAS_TOKEN_LENGTH = 134
 
-export default async function downloadRecords(password: string) {
+export default async function downloadJsonData(password: string) {
   // Validate the password
   if (password.length < 8 || password.length > 32) {
     throw new Error("Invalid password")
@@ -27,7 +27,7 @@ export default async function downloadRecords(password: string) {
     throw new Error("Invalid password")
   }
 
-  // Download the records using the decrypted SAS token
+  // Download the JSON data using the decrypted SAS token
   const sasUrlWithToken = `${SAS_URL}?${decryptedSasToken}`
 
   try {

@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react"
 import Record, { RecordData } from "@/classes/record"
-import downloadRecords from "@/functions/downloadRecords"
+import downloadJsonData from "@/functions/downloadRecords"
 import { GridCellParams, GridSortModel } from "@mui/x-data-grid"
 import formatDate from "@/functions/formatDate"
 import {
   Button,
   CircularProgress,
+  Link,
   SelectChangeEvent,
   Tab,
   Tabs,
@@ -22,6 +23,7 @@ import ActivityType from "@/types/ActivityType"
 import React from "react"
 import RecordsTab from "@/components/recordsTab"
 import AggregatesTab from "@/components/aggregatesTab"
+import GroupLinks from "@/components/challengeLinks"
 
 const HomePage = () => {
   const [password, setPassword] = useLocalStorage<string>("password", "")
@@ -95,7 +97,7 @@ const HomePage = () => {
 
     let downloadedRecords = null
     try {
-      downloadedRecords = await downloadRecords(password)
+      downloadedRecords = await downloadJsonData(password)
     } catch (e: any) {
       setConnectionError(e.message)
     }
@@ -434,7 +436,9 @@ const HomePage = () => {
     return (
       <main className="flex h-screen w-screen justify-center items-center p-4 box-border bg-slate-900">
         <form className="flex-1 max-w-[400px] flex flex-col gap-4 p-8 bg-white shadow rounded">
-          <h1 className="m-0 text-xl text-emerald-600 font-semibold">AutoRek Strava Club</h1>
+          <h1 className="m-0 text-xl text-emerald-600 font-semibold">
+            AutoRek Strava Club
+          </h1>
           <p className="m-0 mb-2">
             A valid password is required to access this app
           </p>
@@ -526,16 +530,24 @@ const HomePage = () => {
           />
         )}
       </div>
-      <div>
-        <Button
-          size="small"
+      <div className="flex flex-col gap-4 items-center">
+        <GroupLinks
+          setSelectedAthletes={setSelectedAthletes}
+          setTab={setTab}
+          getUniqueNames={getUniqueNames}
+          setFilter={setFilter}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          setAggregatesSortModel={setAggregatesSortModel}
+        />
+        <Link
           onClick={clearData}
           sx={{
-            color: "#4ade80",
+            color: "white",
           }}
         >
           Sign out
-        </Button>
+        </Link>
       </div>
     </main>
   )
