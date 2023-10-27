@@ -480,7 +480,7 @@ const HomePage = () => {
         style={{ maxWidth: tab === "leaderBoards" ? 950 : 1290 }}
       >
         <nav className="px-4 box-border text-slate-300 bg-slate-200 w-full rounded-t shadow border-0 border-b border-solid border-slate-300">
-          <div className="flex gap-6 flex justify-center">
+          <div className="flex justify-center">
             <Tabs
               value={tab}
               onChange={handleTabChange}
@@ -490,6 +490,15 @@ const HomePage = () => {
               <Tab label="Activities" value="activities" />
               <Tab label="Leader Boards" value="leaderBoards" />
             </Tabs>
+            <GroupLinks
+              setSelectedAthletes={setSelectedAthletes}
+              setTab={setTab}
+              getUniqueNames={getUniqueNames}
+              setFilter={setFilter}
+              setStartDate={setStartDate}
+              setEndDate={setEndDate}
+              setAggregatesSortModel={setAggregatesSortModel}
+            />
           </div>
         </nav>
         {tab !== "leaderBoards" && (
@@ -530,24 +539,15 @@ const HomePage = () => {
           />
         )}
       </div>
-      <div className="flex flex-col gap-4 items-center">
-        <GroupLinks
-          setSelectedAthletes={setSelectedAthletes}
-          setTab={setTab}
-          getUniqueNames={getUniqueNames}
-          setFilter={setFilter}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
-          setAggregatesSortModel={setAggregatesSortModel}
-        />
-        <Link
+      <div className="flex items-center">
+        <Button
           onClick={clearData}
           sx={{
-            color: "white",
+            color: "#4ade80",
           }}
         >
           Sign out
-        </Link>
+        </Button>
       </div>
     </main>
   )

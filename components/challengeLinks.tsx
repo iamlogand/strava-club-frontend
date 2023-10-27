@@ -1,4 +1,6 @@
-import { Link } from "@mui/material"
+import { Button, Menu, MenuItem } from "@mui/material"
+import React from "react"
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 
 const MORUNNERS = process.env.NEXT_PUBLIC_MORUNNERS
 
@@ -27,6 +29,15 @@ const GroupLinks = ({
   setEndDate,
   setAggregatesSortModel,
 }: GroupLinksProps) => {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
   const links: ChallengeLink[] = [
     {
       title: "Morunners: run count",
@@ -60,7 +71,7 @@ const GroupLinks = ({
     },
   ]
 
-  const handleClick = (morunning: boolean, sortField: string) => {
+  const handleItemClick = (morunning: boolean, sortField: string) => {
     if (!MORUNNERS) return
     const morunners = MORUNNERS.replace(/_/g, " ")
 
@@ -85,26 +96,40 @@ const GroupLinks = ({
       },
     ])
     setTab("leaderBoards")
+    setAnchorEl(null)
   }
 
   const renderLink = (link: ChallengeLink, key: number) => (
-    <Link
-      onClick={() => handleClick(link.morunning, link.sortField)}
-      sx={{
-        color: "#4ade80",
-      }}
+    <MenuItem
       key={key}
+      onClick={() => handleItemClick(link.morunning, link.sortField)}
     >
       {link.title}
-    </Link>
+    </MenuItem>
   )
 
   return (
-    <div className="flex flex-col gap-1 items-center max-w-[600px]">
-      <span className="text-white text-center">November 2022 Challenge Leader Boards</span>
-      <div className="flex gap-x-4 gap-y-1 flex-wrap justify-center">
+    <div className="flex items-center">
+      <Button
+        id="challenges-button"
+        aria-controls={open ? "challenges-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleButtonClick}
+      >
+        Challenges <ArrowDropDownIcon />
+      </Button>
+      <Menu
+        id="challenges-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          "aria-labelledby": "challenges-button",
+        }}
+      >
         {links.map((link, index) => renderLink(link, index))}
-      </div>
+      </Menu>
     </div>
   )
 }
