@@ -84,7 +84,7 @@ const GroupLinks = ({
       const nonMorunners = uniqueNames.filter(
         (name) => !morunnersArray.includes(name)
       )
-      setSelectedAthletes(nonMorunners.sort().join(", "))
+      setSelectedAthletes(nonMorunners.sort().join(","))
       setFilter("All")
     }
     setStartDate("2023-10-30")
