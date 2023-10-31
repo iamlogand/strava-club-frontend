@@ -74,7 +74,6 @@ const GroupLinks = ({
   const handleItemClick = (morunning: boolean, sortField: string) => {
     if (!MORUNNERS) return
     const morunners = MORUNNERS.replace(/_/g, " ")
-
     if (morunning) {
       setSelectedAthletes(morunners)
       setFilter("Run")
