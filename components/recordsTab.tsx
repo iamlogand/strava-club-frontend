@@ -31,9 +31,8 @@ const RecordsTab = ({
   daysCount,
   setDaysCount,
   candidateDaysCount,
-  setCandidateDaysCount
+  setCandidateDaysCount,
 }: RecordsTabProps) => {
-
   const getChartLabels = () => {
     const today = new Date()
     const labels = []
