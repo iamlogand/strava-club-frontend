@@ -300,6 +300,7 @@ const AggregatesTab = ({
           <div className="flex-1 flex flex-row gap-3 flex-wrap justify-center">
             {selectedAthletes
               .split(",")
+              .sort()
               .map((name, index) => renderSelectedAthleteChit(name, index))}
           </div>
           <div className="self-center lg:self-start h-8 flex items-center">
