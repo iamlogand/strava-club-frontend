@@ -1,7 +1,8 @@
 type ActivityType =
   | "All"
-  | "Run"
   | "Walk"
+  | "Run"
+  | "Trail Run"
   | "Ride"
   | "Virtual Ride"
   | "Mountain Bike Ride"

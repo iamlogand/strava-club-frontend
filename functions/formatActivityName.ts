@@ -8,6 +8,8 @@ export function formatActivityName(activityName: string) {
       return "Weight Training"
     case "Soccer":
       return "Football"
+    case "TrailRun":
+      return "Trail Run"
     default:
       return activityName
   }

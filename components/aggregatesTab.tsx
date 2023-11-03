@@ -194,13 +194,17 @@ const AggregatesTab = ({
                 <AllInclusiveIcon className="mr-3" />
                 All
               </MenuItem>
+              <MenuItem value={"Walk"}>
+                <DirectionsWalkIcon className="mr-3" />
+                Walk
+              </MenuItem>
               <MenuItem value={"Run"}>
                 <DirectionsRunIcon className="mr-3" />
                 Run
               </MenuItem>
-              <MenuItem value={"Walk"}>
-                <DirectionsWalkIcon className="mr-3" />
-                Walk
+              <MenuItem value={"Trail Run"}>
+                <DirectionsRunIcon className="mr-3" />
+                Trail Run
               </MenuItem>
               <MenuItem value={"Ride"}>
                 <DirectionsBikeIcon className="mr-3" />
