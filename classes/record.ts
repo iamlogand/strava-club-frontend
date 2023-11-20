@@ -32,7 +32,7 @@ class Record {
     this.elapsedTime = data.elapsed_time
     this.totalElevationGain = data.total_elevation_gain
     this.type = formatActivityName(data.sport_type)
-    this.date = new Date(data.timestamp)
+    this.date = new Date(data.timestamp) 
   }
 }
 
