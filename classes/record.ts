@@ -1,3 +1,4 @@
+import capitalizeFirstLetter from "@/functions/capitalize"
 import { formatActivityName } from "@/functions/formatActivityName"
 
 interface Athlete {
@@ -25,7 +26,7 @@ class Record {
   date: Date
 
   constructor(data: RecordData) {
-    this.name = `${data.athlete.firstname} ${data.athlete.lastname}`
+    this.name = `${capitalizeFirstLetter(data.athlete.firstname)} ${capitalizeFirstLetter(data.athlete.lastname)}`)
     this.description = data.name
     this.distance = data.distance
     this.elapsedTime = data.elapsed_time
