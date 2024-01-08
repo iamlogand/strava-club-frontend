@@ -24,7 +24,7 @@ export default async function downloadJsonData(password: string) {
 
   // Validate the decrypted token
   if (decryptedSasToken.length.toString() !== DECRYPTED_SAS_TOKEN_LENGTH) {
-    throw new Error("Invalid password")
+    throw new Error("Invalid password") 
   }
 
   // Download the JSON data using the decrypted SAS token
