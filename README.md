@@ -5,4 +5,4 @@ A frontent web app for displaying activities and leader boards in a Strava Club,
 The backend is a single JSON file in Azure, which is generated and updated by my [Strava Club Function App](https://github.com/iamlogand/strava-function-app).
 
 ### Screenshots
-![image](https://github.com/iamlogand/strava-club-frontend/assets/104830874/a3c9439e-7f26-4b1a-b811-b4072b199c5f)
+![image](https://github.com/iamlogand/strava-club-frontend/assets/104830874/bd48b280-dc81-41fc-959d-cbbee255947b)
