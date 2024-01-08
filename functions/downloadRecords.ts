@@ -2,7 +2,7 @@ const CryptoJS = require("crypto-js")
 
 const SAS_URL = process.env.NEXT_PUBLIC_SAS_URL
 const ENCRYPTED_SAS_TOKEN = process.env.NEXT_PUBLIC_ENCRYPTED_SAS_TOKEN
-const DECRYPTED_SAS_TOKEN_LENGTH = 134
+const DECRYPTED_SAS_TOKEN_LENGTH = process.env.NEXT_PUBLIC_DECRYPTED_SAS_TOKEN_LEN
 
 export default async function downloadJsonData(password: string) {
   // Validate the password
@@ -23,7 +23,7 @@ export default async function downloadJsonData(password: string) {
   }
 
   // Validate the decrypted token
-  if (decryptedSasToken.length !== DECRYPTED_SAS_TOKEN_LENGTH) {
+  if (decryptedSasToken.length.toString() !== DECRYPTED_SAS_TOKEN_LENGTH) {
     throw new Error("Invalid password")
   }
 
