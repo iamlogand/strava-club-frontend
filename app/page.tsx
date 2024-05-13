@@ -23,7 +23,6 @@ import ActivityType from "@/types/ActivityType"
 import React from "react"
 import RecordsTab from "@/components/recordsTab"
 import AggregatesTab from "@/components/aggregatesTab"
-import GroupLinks from "@/components/challengeLinks"
 
 const HomePage = () => {
   const [password, setPassword] = useLocalStorage<string>("password", "")
@@ -490,15 +489,6 @@ const HomePage = () => {
               <Tab label="Activities" value="activities" />
               <Tab label="Leader Boards" value="leaderBoards" />
             </Tabs>
-            <GroupLinks
-              setSelectedAthletes={setSelectedAthletes}
-              setTab={setTab}
-              getUniqueNames={getUniqueNames}
-              setFilter={setFilter}
-              setStartDate={setStartDate}
-              setEndDate={setEndDate}
-              setAggregatesSortModel={setAggregatesSortModel}
-            />
           </div>
         </nav>
         {tab !== "leaderBoards" && (
